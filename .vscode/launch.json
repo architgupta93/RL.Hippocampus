@@ -1,0 +1,55 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Pacman with Q-Learning",
+            "pythonPath": "/usr/bin/python2",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/pacman/",
+            "program": "${workspaceFolder}/pacman/pacman.py",
+            "args": [
+                "-p", "PacmanQAgent", "-x", "10", "-n", "11", "-l", "ratSmallGrid"
+            ]
+        },
+        {
+            "name": "Python: Online Policy Iteration",
+            "pythonPath": "/usr/bin/python2",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/pacman/",
+            "program": "${workspaceFolder}/pacman/gridworld.py",
+            // Uncomment to run value iteration AUTOMATICALLY
+            /*
+            "args": [
+                "-a", "value", "-i", "5", "-k", "10"
+            ]
+            */
+            // Uncomment to run value iteration MANUALLY
+            "args": [
+                "-a", "q", "-k", "10", "-m"
+            ]
+        }
+        {
+            "name": "Python: Offline Value Iteration",
+            "pythonPath": "/usr/bin/python2",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/pacman/",
+            "program": "${workspaceFolder}/pacman/gridworld.py",
+            // Uncomment to run value iteration AUTOMATICALLY
+            /*
+            "args": [
+                "-a", "value", "-i", "5", "-k", "10"
+            ]
+            */
+            // Uncomment to run value iteration MANUALLY
+            "args": [
+                "-k", "10", "-a", "value", "-i", "10"
+            ]
+        }
+    ]
+}
