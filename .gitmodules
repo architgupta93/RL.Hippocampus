@@ -1,0 +1,3 @@
+[submodule "ValueLearning/MotionAnimation"]
+	path = ValueLearning/MotionAnimation
+	url = git@ssh.github.com:architgupta93/MotionAnimation
