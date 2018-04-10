@@ -21,6 +21,9 @@ class Maze(object):
         self._goal_locations = []
         self._init_locations = []
 
+    def getBounds(self):
+        return(0, self._nx, 0, self._ny)
+
     def getStates(self):
         """
         Return all possible states
@@ -96,6 +99,27 @@ class Maze(object):
         if self.reachedGoalState():
             return self.GOAL_STATE_REWARD
         return self.NON_GOAL_STATE_REWARD
+
+    def draw(self):
+        """
+        Draw the current state of the maze
+        """
+
+        # Select the  appropriate figure window
+        if self._fig_num < 0:
+            fig = plt.figure()
+            self._fig_num = fig.number
+        else:
+            plt.figure(self._fig_num)
+
+        # Draw the current location of the agent
+        plt.scatter(self._state[0], self._state[1], marker='s', alpha=0.5, c='blue')
+
+        # Draw the current goal location(s)
+        gx, gy = zip(*self._goal_locations)
+        plt.scatter(gx, gy, c='green', marker='o', alpha=0.5)
+
+        plt.show()
 
     # Abstract functions to be implemented by child classes
     def redrawInitLocation(self):

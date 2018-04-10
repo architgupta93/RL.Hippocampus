@@ -52,4 +52,10 @@ class PlaceField(object):
 
         # Assuming spherically symmetric fields for now. This can be changed later on.
         dist_euc = (dist_x * dist_x) + (dist_y * dist_y)
-        return self._mean_firing_rate * np.exp(-dist_euc/self._field_size)
+        try:
+            activity = self._mean_firing_rate * np.exp(-dist_euc/self._field_size)
+            return activity
+        except Exception as err:
+            print(err)
+            return 0
+        

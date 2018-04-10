@@ -1,13 +1,16 @@
 import Hippocampus
 import Environment
+import Graphics
 from ActorCritic import Actor, Critic
 import numpy as np
 import matplotlib.pyplot as plt
 
 def testMaze():
+    is_interactive = True
+
     # Create a Maze for the experiment
-    nx = 100
-    ny = 100
+    nx = 10
+    ny = 10
     nf = 20
 
     # Build the maze
@@ -20,8 +23,8 @@ def testMaze():
     actor = Actor(maze.getActions(), place_fields) 
     critic = Critic(place_fields)
 
-    # Store the path taken by the Agent
-    path = []
+    # Path is visualized using a graphics object
+    canvas = Graphics.MazeCanvas(maze)
 
     while not maze.reachedGoalState():
         current_state = maze.getCurrentState()
@@ -36,7 +39,7 @@ def testMaze():
 
         # Apply this action onto the environment
         reward = maze.move(next_action)
-        path.append(maze.getCurrentState())
+        canvas.update(maze.getCurrentState())
 
         # Use the obtained reward to update the value
         critic.updateValue(pf_activity, reward)
