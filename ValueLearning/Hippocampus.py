@@ -15,7 +15,10 @@ def setupPlaceFields(maze, n_place_fields):
 
     # Select n_place_fields among these to the centers of the place fields
     pf_centers = random.sample(states, n_place_fields)
-    pf_sizes   = mean_pf_size + pf_variability * np.random.randn(n_states,)
+
+    # The mean is not quite the mean.. However, using both positive and
+    # negative values sometimes leads to negative values!
+    pf_sizes   = mean_pf_size + pf_variability * np.random.rand(n_states,)
 
     # Create and return the place fields
     pfs = []

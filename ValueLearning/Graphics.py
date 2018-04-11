@@ -1,3 +1,4 @@
+import matplotlib.pylab as plt
 from MotionAnimation.PY import data_types as GR
 from Environment import Maze
 
@@ -17,7 +18,9 @@ class MazeCanvas(object):
         self._max_x    = maze_bounds[1]
         self._min_y    = maze_bounds[2]
         self._max_y    = maze_bounds[3]
+        plt.ion()
     
     def update(self, next_state):
         self._anim_obj.update(self._t_stamp, next_state[0], next_state[1])
+        self._anim_obj.plotTimedTR(object_type='point')
         self._t_stamp += 1

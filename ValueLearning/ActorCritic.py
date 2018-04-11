@@ -7,11 +7,14 @@ class Actor(object):
         Actor, takes in a place field activities and produces an action based
         on them
         """
+        # Learning parameters
+        self._weight_scaling = 0.5
+
         self._actions = actions
         self._n_actions = len(actions)
-        self._weights = np.zeros((len(actions), len(pfs)), dtype=float)
-
-        pass
+        self._n_fields = len(pfs)
+        self._weights = np.zeros((self._n_actions, self._n_fields), dtype=float)
+        self._last_selected_action = -1
     
     def getAction(self, activity):
         action_weights = np.exp(np.dot(self._weights, activity))
@@ -32,29 +35,58 @@ class Actor(object):
 
         uniform_sample  = np.random.rand()
         selected_action = np.searchsorted(selection_cdf, uniform_sample)
+        self._last_selected_action = selected_action
 
         return self._actions[selected_action]
+    
+    def updateWeights(self, new_activity, prediction_error):
+        """
+        Update the weights that are used for making action decisions
+        """
+
+        last_action = self._last_selected_action
+        for pf in range(self._n_fields):
+            self._weights[last_action, pf] += prediction_error * new_activity[pf]
 
 class Critic(object):
+    N_PAST_VALUES = 1
     def __init__(self, pfs):
         """
         Critic, takes in place field activities and produces an estimate for the
         current 'value' based on these
         """
-        self._weights = np.zeros(len(pfs), dtype=float)
-        self._is_learning = False
+        # Learning parameters, including the proportionality constant with
+        # which weights are scaled for the critic
+        self._learning_rate   = 0.1
+        self._discount_factor = 0.9
+        self._weight_scaling  = 0.5
+
+        # Weights to map place field activities to value
+        self._n_fields = len(pfs)
+        self._weights  = np.zeros(self._n_fields, dtype=float)
+        self._past_values = list([0])
+        self._is_learning = True
     
     def getValue(self, activity):
         return np.dot(self._weights, activity)
 
-    def updateValue(self, activity, reward):
+    def updateValue(self, new_activity, reward):
         """
-        If for a give activity, the agent received a certain reward, how
-        should the value function be updated
+        After taking an action, agent receives a reward and activity changes.
+        Based on the new activity, known value of the past state, and
+        received reward, we can update the value of the past state.
         """
+        next_value = self.getValue(new_activity)
+        past_value = self._past_values.pop()
+        
+        prediction_error = reward + self._discount_factor * next_value - \
+            past_value
+        
+        # Set the current value to be the past value
+        self._past_values.append(next_value)
 
         if self._is_learning:
-            raise NotImplementedError
-        else:
-            # Learnt values have been frozen
-            return
+            for pf in range(self._n_fields):
+                self._weights[pf] += prediction_error * new_activity[pf]
+        
+        return prediction_error

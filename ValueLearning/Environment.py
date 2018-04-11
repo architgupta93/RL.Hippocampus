@@ -137,22 +137,27 @@ class RandomGoalOpenField(Maze):
         super(RandomGoalOpenField, self).__init__(nx, ny)
         self.redrawGoalLocation()
         self.redrawInitLocation()
+        return
+
+    def redrawGoalLocation(self):
+        # Have a single, random goal location inside the maze
+        self._goal_locations = [(np.random.randint(0, self._nx), np.random.randint(0,self._ny))]
+
+        # Print the goal location
+        goal_location = self._goal_locations[0]
+        print('Goal location: (%d, %d)' % (goal_location[0], goal_location[1]))
+
+        return
+
+    def redrawInitLocation(self):
+        # Single, random start location inside the maze
+        self._init_locations = [(np.random.randint(0, self._nx), np.random.randint(0, self._ny))]
 
         # Pick on the the initial locations
         initial_state = random.sample(self._init_locations, 1)[0]
         self._state[0] = initial_state[0]
         self._state[1] = initial_state[1]
 
-        return
-    
-    def redrawGoalLocation(self):
-        # Have a single, random goal location inside the maze
-        self._goal_locations = [(np.random.randint(0, self._nx), np.random.randint(0,self._ny))]
-        return
-
-    def redrawInitLocation(self):
-        # Single, random start location inside the maze
-        self._init_locations = [(np.random.randint(0, self._nx), np.random.randint(0, self._ny))]
         return
     
     def reachedGoalState(self):

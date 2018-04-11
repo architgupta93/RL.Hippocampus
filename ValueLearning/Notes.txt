@@ -1,0 +1,7 @@
+Role of critic
+
+In order to be able to update the value of a particular 'state', we need to
+be able to recall what the last state was. While moving, the theta sequences
+can actually do this job (since they tend to start behind the animal).
+
+DISCUSS WITH DAVID
