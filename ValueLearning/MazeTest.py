@@ -9,9 +9,9 @@ def testMaze():
     DBG_LVL = 2
 
     # Create a Maze for the experiment
-    nx = 10
-    ny = 10
-    nf = 20
+    nx = 3
+    ny = 3
+    nf = 4
 
     # Build the maze
     maze  = Environment.RandomGoalOpenField(nx, ny)
@@ -52,7 +52,9 @@ def testMaze():
             # FIXME: Here, we could be using the new activity after the action has
             # been taken, or the old activity before the action was taken. Since
             # the literature says that we have use old activity, we'll go with it!
-            prediction_error = critic.updateValue(pf_activity, reward)
+            new_maze_state   = maze.getCurrentState()
+            new_pf_activity  = [pf.getActivity(new_maze_state) for pf in place_fields]
+            prediction_error = critic.updateValue(pf_activity, new_pf_activity, reward)
             actor.updateWeights(pf_activity, prediction_error)
 
         if (DBG_LVL > 0):

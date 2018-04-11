@@ -64,26 +64,24 @@ class Critic(object):
         # Weights to map place field activities to value
         self._n_fields = len(pfs)
         self._weights  = np.zeros(self._n_fields, dtype=float)
-        self._past_values = list([0])
         self._is_learning = True
     
     def getValue(self, activity):
         return np.dot(self._weights, activity)
 
-    def updateValue(self, new_activity, reward):
+    def updateValue(self, activity, new_activity, reward):
         """
         After taking an action, agent receives a reward and activity changes.
         Based on the new activity, known value of the past state, and
         received reward, we can update the value of the past state.
         """
         next_value = self.getValue(new_activity)
-        past_value = self._past_values.pop()
+        past_value = self.getValue(activity)
         
         prediction_error = reward + self._discount_factor * next_value - \
             past_value
         
         # Set the current value to be the past value
-        self._past_values.append(next_value)
 
         if self._is_learning:
             for pf in range(self._n_fields):
