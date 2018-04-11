@@ -9,8 +9,8 @@ def testMaze():
     DBG_LVL = 2
 
     # Create a Maze for the experiment
-    nx = 3
-    ny = 3
+    nx = 4
+    ny = 4
     nf = 4
 
     # Build the maze

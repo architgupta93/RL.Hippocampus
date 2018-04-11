@@ -58,7 +58,7 @@ class Critic(object):
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
         self._learning_rate   = 0.1
-        self._discount_factor = 0.9
+        self._discount_factor = 0.02
         self._weight_scaling  = 0.5
 
         # Weights to map place field activities to value
