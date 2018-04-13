@@ -5,7 +5,7 @@ import numpy as np
 
 DBG_LVL = 0
 
-def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=None):
+def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=None, max_steps=np.Inf):
     """
     Main function responsible for learning value function for a given environment
     INPUTS:
@@ -43,6 +43,9 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
     for trial in range(n_trials):
         environment.redrawInitLocation()
         while not environment.reachedGoalState():
+            if (n_steps[trial] > max_steps):
+                break
+
             n_steps[trial] += 1
             current_state = environment.getCurrentState()
             if DBG_LVL > 1:
@@ -72,3 +75,42 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
         
     Graphics.plot(n_steps)
     return(actor, critic)
+
+def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
+    """
+    This function navigates through an environment with a given actor and a critic
+    - Performs a subset of operations of learnValueFunction
+    - There is some code duplication because of this but it can't be helped
+    """
+
+    # Path is visualized using a graphics object
+    canvas = Graphics.MazeCanvas(environment)
+
+    n_steps  = np.zeros(n_trials, dtype=int)
+    for trial in range(n_trials):
+        environment.redrawInitLocation()
+        while not environment.reachedGoalState():
+            if (n_steps[trial] > max_steps):
+                break
+
+            n_steps[trial] += 1
+            current_state = environment.getCurrentState()
+            if DBG_LVL > 1:
+                print('On state: (%d, %d)' % (current_state[0], current_state[1]))
+
+            # Get the place field activity based on the current location
+            pf_activity = [pf.getActivity(current_state) for pf in place_fields]
+
+            # Get an action based on the place field activity
+            next_action = actor.getAction(pf_activity)
+            if DBG_LVL > 1:
+                print('Selected Action: %s' % next_action)
+
+            # Apply this action onto the environment
+            environment.move(next_action)
+
+        if (DBG_LVL > 0):
+            canvas.plotValueFunction(place_fields, critic)
+            print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
+
+    Graphics.plot(n_steps)

@@ -12,12 +12,19 @@ class Agent(object):
         self._weight_scaling = 0.005
         self._weights   = np.zeros(())
         self._n_fields  = len(fields)
+        self._is_learning = True
 
     def getValue(self, activity):
         return np.dot(self._weights, activity)
 
     def getNFields(self):
         return self._n_fields
+
+    def setLearning(self):
+        self._is_learning = True
+
+    def unsetLearning(self):
+        self._is_learning = False
 
 class Actor(Agent):
     def __init__(self, actions, pfs):
@@ -58,6 +65,8 @@ class Actor(Agent):
         """
         Update the weights that are used for making action decisions
         """
+        if not self._is_learning:
+            return
 
         last_action = self._last_selected_action
         for pf in range(self._n_fields):
@@ -78,7 +87,6 @@ class Critic(Agent):
 
         # Weights to map place field activities to value
         self._weights  = np.zeros(self._n_fields, dtype=float)
-        self._is_learning = True
 
     def updateValue(self, activity, new_activity, reward):
         """
@@ -86,6 +94,9 @@ class Critic(Agent):
         Based on the new activity, known value of the past state, and
         received reward, we can update the value of the past state.
         """
+        if not self._is_learning:
+            return
+
         next_value = self.getValue(new_activity)
         past_value = self.getValue(activity)
         
