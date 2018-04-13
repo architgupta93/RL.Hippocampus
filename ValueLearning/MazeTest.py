@@ -9,9 +9,9 @@ def testMaze():
     DBG_LVL = 2
 
     # Create a Maze for the experiment
-    nx = 4
-    ny = 4
-    nf = 4
+    nx = 10
+    ny = 10
+    nf = nx * ny
 
     # Build the maze
     maze  = Environment.RandomGoalOpenField(nx, ny)
@@ -24,7 +24,7 @@ def testMaze():
     critic = Critic(place_fields)
 
     # Path is visualized using a graphics object
-    # canvas = Graphics.MazeCanvas(maze)
+    canvas = Graphics.MazeCanvas(maze)
 
     n_trials = 20
     n_steps  = np.zeros(n_trials, dtype=int)
@@ -57,6 +57,7 @@ def testMaze():
             prediction_error = critic.updateValue(pf_activity, new_pf_activity, reward)
             actor.updateWeights(pf_activity, prediction_error)
 
+        canvas.plotValueFunction(place_fields, critic)
         if (DBG_LVL > 0):
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
 

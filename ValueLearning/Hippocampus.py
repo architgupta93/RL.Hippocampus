@@ -27,13 +27,6 @@ def setupPlaceFields(maze, n_place_fields):
 
     return pfs
 
-def viewPlaceFields(maze, place_fields):
-    """
-    Visualize the place field activity
-    """
-
-    raise NotImplementedError
-
 class PlaceField(object):
     POP_MEAN_FIRING_RATE = 5
 
@@ -62,3 +55,6 @@ class PlaceField(object):
             print(err)
             return 0
         
+    def getCenter(self):
+        # TODO: Might have to return the field sizes too!
+        return (self._center_x, self._center_y)

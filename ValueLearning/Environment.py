@@ -22,7 +22,7 @@ class Maze(object):
         self._init_locations = []
 
     def getBounds(self):
-        return(0, self._nx, 0, self._ny)
+        return(0, 0, self._nx, self._ny)
 
     def getStates(self):
         """
