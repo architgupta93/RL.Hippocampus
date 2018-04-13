@@ -15,7 +15,7 @@ def testMaze():
 
     n_alternations = 4
     max_nav_steps = 100
-    max_train_steps = 1000
+    max_train_steps = 200
 
     # First Environment: Has its own place fields
     environment_1  = Environment.RandomGoalOpenField(nx, ny)
@@ -27,7 +27,7 @@ def testMaze():
     place_fields_2 = Hippocampus.setupPlaceFields(environment_2, nf)
 
     # First, train an agent on the first environment
-    (actor, critic) = ValueLearning.learnValueFunction(n_training_trials, environment_1, place_fields_1, max_train_steps)
+    (actor, critic) = ValueLearning.learnValueFunction(n_training_trials, environment_1, place_fields_1, max_steps=max_train_steps)
 
     for alt in range(n_alternations):
         print('Alternation: %d' % alt)

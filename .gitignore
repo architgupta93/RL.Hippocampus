@@ -102,3 +102,6 @@ ENV/
 
 # Vim
 *.swp
+
+# Presentations - Go Libreoffice
+*.odp
