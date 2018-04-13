@@ -8,7 +8,7 @@ class Actor(object):
         on them
         """
         # Learning parameters
-        self._weight_scaling = 0.5
+        self._weight_scaling = 0.005
 
         self._actions = actions
         self._n_actions = len(actions)
@@ -39,14 +39,14 @@ class Actor(object):
 
         return self._actions[selected_action]
     
-    def updateWeights(self, new_activity, prediction_error):
+    def updateWeights(self, activity, prediction_error):
         """
         Update the weights that are used for making action decisions
         """
 
         last_action = self._last_selected_action
         for pf in range(self._n_fields):
-            self._weights[last_action, pf] += prediction_error * new_activity[pf]
+            self._weights[last_action, pf] += self._weight_scaling * prediction_error * activity[pf]
 
 class Critic(object):
     N_PAST_VALUES = 1
@@ -57,9 +57,9 @@ class Critic(object):
         """
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
-        self._learning_rate   = 0.1
-        self._discount_factor = 0.02
-        self._weight_scaling  = 0.5
+        self._learning_rate   = 0.02
+        self._discount_factor = 0.9
+        self._weight_scaling  = 0.005
 
         # Weights to map place field activities to value
         self._n_fields = len(pfs)
@@ -85,6 +85,6 @@ class Critic(object):
 
         if self._is_learning:
             for pf in range(self._n_fields):
-                self._weights[pf] += prediction_error * new_activity[pf]
+                self._weights[pf] += self._weight_scaling * prediction_error * new_activity[pf]
         
         return prediction_error

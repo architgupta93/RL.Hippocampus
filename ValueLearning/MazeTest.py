@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def testMaze():
-    DBG_LVL = 2
+    DBG_LVL = 1
 
     # Create a Maze for the experiment
     nx = 10
