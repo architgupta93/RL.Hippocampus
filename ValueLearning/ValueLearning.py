@@ -5,7 +5,7 @@ import numpy as np
 
 DBG_LVL = 0
 
-def learnValueFunction(n_trials, environment, place_fields):
+def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=None):
     """
     Main function responsible for learning value function for a given environment
     INPUTS:
@@ -13,6 +13,10 @@ def learnValueFunction(n_trials, environment, place_fields):
     n_trials: (INTEGER) Number of trials allowed on the task
     environment: (Maze) Physical space in which the task has to be learnt
     place_fields: (PlaceField) Entity that encodes a particular location
+
+    <OPTIONAL INPUTS>
+    actor: Pre-trained actor
+    critic: Pre-trained critic
 
     OUTPUTS:
     --------
@@ -22,8 +26,15 @@ def learnValueFunction(n_trials, environment, place_fields):
     """
 
     # Set up the actor and critic based on the place fields
-    actor = Agents.Actor(environment.getActions(), place_fields) 
-    critic = Agents.Critic(place_fields)
+    if actor is None:
+        actor = Agents.Actor(environment.getActions(), place_fields) 
+    else:
+        assert(actor.getNFields() == len(place_fields))
+
+    if critic is None:
+        critic = Agents.Critic(place_fields)
+    else:
+        assert(critic.getNFields() == len(place_fields))
 
     # Path is visualized using a graphics object
     canvas = Graphics.MazeCanvas(environment)

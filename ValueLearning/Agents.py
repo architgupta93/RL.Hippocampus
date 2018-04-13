@@ -1,23 +1,38 @@
 import numpy as np
 import random
 
-class Actor(object):
+class Agent(object):
+    """
+    A general concept  of an agent that interacts with cell activity.
+    The output of the agent is a weighted sum of the input activity
+    """
+
+    def __init__(self, fields):
+        # Learning parameters
+        self._weight_scaling = 0.005
+        self._weights   = np.zeros(())
+        self._n_fields  = len(fields)
+
+    def getValue(self, activity):
+        return np.dot(self._weights, activity)
+
+    def getNFields(self):
+        return self._n_fields
+
+class Actor(Agent):
     def __init__(self, actions, pfs):
         """
         Actor, takes in a place field activities and produces an action based
         on them
         """
-        # Learning parameters
-        self._weight_scaling = 0.005
-
+        super(Actor, self).__init__(pfs)
         self._actions = actions
         self._n_actions = len(actions)
-        self._n_fields = len(pfs)
-        self._weights = np.zeros((self._n_actions, self._n_fields), dtype=float)
         self._last_selected_action = -1
+        self._weights   = np.zeros((self._n_actions, self._n_fields), dtype=float)
     
     def getAction(self, activity):
-        action_weights = np.exp(np.dot(self._weights, activity))
+        action_weights = np.exp(self.getValue(activity))
 
         # Return the maximally weighted action
         # selected_action = np.argmax(action_weights)
@@ -48,26 +63,22 @@ class Actor(object):
         for pf in range(self._n_fields):
             self._weights[last_action, pf] += self._weight_scaling * prediction_error * activity[pf]
 
-class Critic(object):
-    N_PAST_VALUES = 1
+class Critic(Agent):
     def __init__(self, pfs):
         """
         Critic, takes in place field activities and produces an estimate for the
         current 'value' based on these
         """
+        super(Critic, self).__init__(pfs)
+
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
         self._learning_rate   = 0.02
         self._discount_factor = 0.9
-        self._weight_scaling  = 0.005
 
         # Weights to map place field activities to value
-        self._n_fields = len(pfs)
         self._weights  = np.zeros(self._n_fields, dtype=float)
         self._is_learning = True
-    
-    def getValue(self, activity):
-        return np.dot(self._weights, activity)
 
     def updateValue(self, activity, new_activity, reward):
         """
