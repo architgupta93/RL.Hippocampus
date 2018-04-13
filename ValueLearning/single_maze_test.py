@@ -12,7 +12,7 @@ def testMaze():
 
     # Every location has an associated place field
     # TODO: Play around with having more/fewer place fields!
-    n_fields = round(0.1 * (nx * ny)) 
+    n_fields = round(1.0 * (nx * ny)) 
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
     # Number of trials used in the experiments

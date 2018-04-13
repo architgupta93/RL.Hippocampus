@@ -42,6 +42,10 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
     n_steps  = np.zeros(n_trials, dtype=int)
     for trial in range(n_trials):
         environment.redrawInitLocation()
+        current_state = environment.getCurrentState()
+        if (DBG_LVL > 0):
+            print('Initial state: (%d, %d)' % (current_state[0], current_state[1]))
+
         while not environment.reachedGoalState():
             if (n_steps[trial] > max_steps):
                 break

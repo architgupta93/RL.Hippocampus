@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-N_CELLS_PER_FIELD = 100
+N_CELLS_PER_FIELD = 10
 
 def assignPlaceCells(n_cells, place_fields):
     """
@@ -11,8 +11,9 @@ def assignPlaceCells(n_cells, place_fields):
     # Right now the setup is exact. Every N_CELLS_PER_FIELD share the same place field
     n_fields = len(place_fields)
     cells_per_field = round(n_cells/n_fields)
+    cell_shuffle_assignment = random.sample(range(n_cells), n_cells)
     total_cells_assigned = 0
-    cells = []
+    cells = np.empty(n_cells, dtype=PlaceCell)
 
     for cell_cohort in range(n_fields):
         n_cells_in_cohort = 0
@@ -20,7 +21,7 @@ def assignPlaceCells(n_cells, place_fields):
         field_center = place_fields[cell_cohort].getCenter()
 
         while (total_cells_assigned < n_cells) and (n_cells_in_cohort <  cells_per_field):
-            cells.append(PlaceCell(field_center, field_size))
+            cells[cell_shuffle_assignment[total_cells_assigned]] = PlaceCell(field_center, field_size)
             n_cells_in_cohort += 1
             total_cells_assigned += 1
 
