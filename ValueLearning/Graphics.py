@@ -1,9 +1,6 @@
 import matplotlib.pylab as plt
 from mpl_toolkits.mplot3d import Axes3D
 from MotionAnimation.PY import data_types as GR
-from Environment import Maze
-import Hippocampus
-import ActorCritic
 import numpy as np
 
 class MazeCanvas(object):
@@ -58,3 +55,7 @@ class MazeCanvas(object):
         plt.show()
 
         # TODO: On top of this plot, we should add the place field locations
+
+def plot(*args):
+    plt.plot(*args)
+    plt.show()
