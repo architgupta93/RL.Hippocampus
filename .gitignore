@@ -103,5 +103,6 @@ ENV/
 # Vim
 *.swp
 
-# Presentations - Go Libreoffice
-*.odp
+# Presentations, pictures - Go Libreoffice
+*.odp*
+*.png

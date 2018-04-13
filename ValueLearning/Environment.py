@@ -57,7 +57,7 @@ class Maze(object):
                 return no_movement
 
         # Right X boundary
-        if self._state[0] == self._nx:
+        if self._state[0] == self._nx-1:
             if translation[0] > 0:
                 return no_movement
         
@@ -67,7 +67,7 @@ class Maze(object):
                 return no_movement
 
         # Top Y boundary
-        if self._state[1] == self._ny:
+        if self._state[1] == self._ny-1:
             if translation[1] > 0:
                 return no_movement
 

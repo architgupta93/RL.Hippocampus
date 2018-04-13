@@ -7,15 +7,15 @@ def testMaze():
     No comments here. Look at single_maze_test.py for more details!
     """
 
-    nx = 10
-    ny = 10
-    nf = nx * ny
+    nx = 20
+    ny = 20
+    nf = round(0.2 * nx * ny)
     n_training_trials = 20
     n_navigation_trials = 4
 
     n_alternations = 4
     max_nav_steps = 100
-    max_train_steps = 200
+    max_train_steps = 1000
 
     # First Environment: Has its own place fields
     environment_1  = Environment.RandomGoalOpenField(nx, ny)

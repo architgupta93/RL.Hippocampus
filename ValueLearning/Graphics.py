@@ -21,6 +21,28 @@ class MazeCanvas(object):
         self._max_y    = maze_bounds[3]
         # plt.ion()
     
+    def visualizePlaceFields(self, place_fields):
+        """
+        Show place cell activity for all the positions on the maze
+        """
+
+        x_locs = range(self._min_x, self._max_x)
+        y_locs = range(self._min_y, self._max_y)
+        activity = np.zeros((len(x_locs), len(y_locs)), dtype=float)
+        for xi, px in enumerate(x_locs):
+            for yj, py in enumerate(y_locs):
+                activity[xi, yj] = sum([pf.getActivity((px, py)) for pf in place_fields])
+
+        X, Y = np.meshgrid(x_locs, y_locs)
+        # 3D Figure, needs some effort
+        fig = plt.figure()
+        ax  = fig.add_subplot(111, projection='3d')
+        ax.plot_surface(X, Y, activity, cmap=plt.get_cmap(name='viridis'))
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('A(x, y)')
+        plt.show()
+
     def update(self, next_state):
         self._anim_obj.update(self._t_stamp, next_state[0], next_state[1])
         self._anim_obj.plotTimedTR(object_type='point')

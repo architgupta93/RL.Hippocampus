@@ -1,32 +1,34 @@
 import Hippocampus
 import Environment
 import ValueLearning
+import Graphics
 
 def testMaze():
+    ValueLearning.DBG_LVL = 0
     # Create a Maze for the experiment
-    nx = 10
-    ny = 10
+    nx = 20
+    ny = 20
 
     # Every location has an associated place field
     # TODO: Play around with having more/fewer place fields!
-    nf = nx * ny
-    nT = 20
+    nf = round(0.1 * (nx * ny))
+    nT = 20 # Training trials
+    nN = 20  # Navigation trials
 
     # Build the maze
     maze  = Environment.RandomGoalOpenField(nx, ny)
+    canvas = Graphics.MazeCanvas(maze)
 
     # Generate a set of place fields for the environment
     place_fields = Hippocampus.setupPlaceFields(maze, nf) 
+    canvas.visualizePlaceFields(place_fields)
 
     # Learn how to navigate this Environment
     (actor, critic) = ValueLearning.learnValueFunction(nT, maze, place_fields)
 
-    # Stop actor and critic from learning
-    actor.unsetLearning()
-    critic.unsetLearning()
-
     # Try a single trial on the same Maze and see how we do
-    (actor, critic) = ValueLearning.learnValueFunction(nT, maze, place_fields, actor, critic)
+    ValueLearning.DBG_LVL = 0
+    ValueLearning.navigate(nN, maze, place_fields, actor, critic, max_steps=200)
 
 if __name__ == "__main__":
     testMaze()
