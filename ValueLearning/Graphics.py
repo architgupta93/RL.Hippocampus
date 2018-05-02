@@ -86,5 +86,8 @@ class MazeCanvas(object):
         # TODO: On top of this plot, we should add the place field locations
 
 def plot(*args):
-    plt.plot(*args)
+    # Create a new figure
+    new_figure = plt.figure()
+    axes = new_figure.add_subplot(111)
+    axes.plot(*args)
     plt.show()

@@ -71,9 +71,11 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
             actor.updateWeights(pf_activity, prediction_error)
 
         if (DBG_LVL > 0):
-            canvas.plotTrajectory()
-            canvas.plotValueFunction(place_fields, critic)
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
+            if (DBG_LVL > 1):
+                # TODO: Something goes wrong here and stops us from plotting n_steps
+                canvas.plotTrajectory()
+                canvas.plotValueFunction(place_fields, critic)
         
     Graphics.plot(n_steps)
     return(actor, critic)
@@ -85,36 +87,21 @@ def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
     - There is some code duplication because of this but it can't be helped
     """
 
-    n_steps  = np.zeros(n_trials, dtype=int)
-    for trial in range(n_trials):
-        # Path is visualized using a graphics object
-        canvas = Graphics.MazeCanvas(environment)
+    actor_was_learning = False
+    critic_was_learning = False
 
-        environment.redrawInitLocation()
-        while not environment.reachedGoalState():
-            if (n_steps[trial] > max_steps):
-                break
+    if actor.isLearning():
+        actor_was_learning = True
+        actor.unsetLearning()
 
-            n_steps[trial] += 1
-            current_state = environment.getCurrentState()
-            canvas.update(current_state)
-            if DBG_LVL > 1:
-                print('On state: (%d, %d)' % (current_state[0], current_state[1]))
+    if critic.isLearning():
+        critic_was_learning = True
+        critic.unsetLearning()
 
-            # Get the place field activity based on the current location
-            pf_activity = [pf.getActivity(current_state) for pf in place_fields]
+    learnValueFunction(n_trials, environment, place_fields, actor, critic, max_steps)
 
-            # Get an action based on the place field activity
-            next_action = actor.getAction(pf_activity)
-            if DBG_LVL > 1:
-                print('Selected Action: %s' % next_action)
+    if actor_was_learning:
+        actor.setLearning()
 
-            # Apply this action onto the environment
-            environment.move(next_action)
-
-        if (DBG_LVL > 0):
-            canvas.plotTrajectory()
-            canvas.plotValueFunction(place_fields, critic)
-            print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
-
-    Graphics.plot(n_steps)
+    if critic_was_learning:
+        critic.setLearning()

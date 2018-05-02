@@ -26,7 +26,12 @@ class Agent(object):
     def unsetLearning(self):
         self._is_learning = False
 
+    def isLearning(self):
+        return self._is_learning
+
 class Actor(Agent):
+    EPSILON = 1e-8
+
     def __init__(self, actions, pfs):
         """
         Actor, takes in a place field activities and produces an action based
@@ -39,7 +44,14 @@ class Actor(Agent):
         self._weights   = np.zeros((self._n_actions, self._n_fields), dtype=float)
     
     def getAction(self, activity):
-        action_weights = np.exp(self.getValue(activity))
+        # The exponent here is a very messy function. it really messes up the
+        # numerics of this whole function.
+        # action_weights = np.exp(self.getValue(activity))
+
+        # Experimenting with other monotonic functions
+        baseline_activity = self.getValue(activity) 
+        scaled_activity = (baseline_activity + self.EPSILON) / max(abs(baseline_activity) + self.EPSILON)
+        action_weights  = np.exp(scaled_activity)
 
         # Return the maximally weighted action
         # selected_action = np.argmax(action_weights)
