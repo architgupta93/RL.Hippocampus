@@ -36,11 +36,11 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
     else:
         assert(critic.getNFields() == len(place_fields))
 
-    # Path is visualized using a graphics object
-    canvas = Graphics.MazeCanvas(environment)
-
     n_steps  = np.zeros(n_trials, dtype=int)
     for trial in range(n_trials):
+        # Path is visualized using a graphics object
+        canvas = Graphics.MazeCanvas(environment)
+
         environment.redrawInitLocation()
         while not environment.reachedGoalState():
             if (n_steps[trial] > max_steps):
@@ -48,6 +48,7 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
             n_steps[trial] += 1
             current_state = environment.getCurrentState()
+            canvas.update(current_state)
             if DBG_LVL > 1:
                 print('On state: (%d, %d)' % (current_state[0], current_state[1]))
 
@@ -70,6 +71,7 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
             actor.updateWeights(pf_activity, prediction_error)
 
         if (DBG_LVL > 0):
+            canvas.plotTrajectory()
             canvas.plotValueFunction(place_fields, critic)
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
         
@@ -83,11 +85,11 @@ def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
     - There is some code duplication because of this but it can't be helped
     """
 
-    # Path is visualized using a graphics object
-    canvas = Graphics.MazeCanvas(environment)
-
     n_steps  = np.zeros(n_trials, dtype=int)
     for trial in range(n_trials):
+        # Path is visualized using a graphics object
+        canvas = Graphics.MazeCanvas(environment)
+
         environment.redrawInitLocation()
         while not environment.reachedGoalState():
             if (n_steps[trial] > max_steps):
@@ -95,6 +97,7 @@ def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
 
             n_steps[trial] += 1
             current_state = environment.getCurrentState()
+            canvas.update(current_state)
             if DBG_LVL > 1:
                 print('On state: (%d, %d)' % (current_state[0], current_state[1]))
 
@@ -110,6 +113,7 @@ def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
             environment.move(next_action)
 
         if (DBG_LVL > 0):
+            canvas.plotTrajectory()
             canvas.plotValueFunction(place_fields, critic)
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
 

@@ -5,7 +5,8 @@ import numpy as np
 
 class MazeCanvas(object):
     """
-    Used for visualizing the current view of the state space
+    Used for visualizing the current view of the state space, as well as the
+    trajectory taken while traversing it.
     """
 
     def __init__(self, maze):
@@ -44,9 +45,12 @@ class MazeCanvas(object):
         plt.show()
 
     def update(self, next_state):
+        # Append the data points to the appropriate trajectory object
         self._anim_obj.update(self._t_stamp, next_state[0], next_state[1])
-        self._anim_obj.plotTimedTR(object_type='point')
         self._t_stamp += 1
+
+    def plotTrajectory(self):
+        self._anim_obj.plotTimedTR(object_type='point')
     
     def plotValueFunction(self, place_fields, critic):
         n_fields = len(place_fields)

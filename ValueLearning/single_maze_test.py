@@ -4,7 +4,7 @@ import ValueLearning
 import Graphics
 
 def testMaze():
-    ValueLearning.DBG_LVL = 0
+    ValueLearning.DBG_LVL = 1
     # Create a Maze for the experiment
     nx = 20
     ny = 20
