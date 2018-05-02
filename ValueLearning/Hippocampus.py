@@ -9,8 +9,8 @@ def setupPlaceFields(maze, n_place_fields):
     states   = maze.getStates()
     n_states = len(states)
 
-    # Place fields cover 10% of the maze on an average
-    mean_pf_size   = np.sqrt(n_states) * 0.10
+    # Place fields cover 20% of the maze on an average
+    mean_pf_size   = np.sqrt(n_states) * 0.20
     pf_variability = 1.0
 
     # Select n_place_fields among these to the centers of the place fields

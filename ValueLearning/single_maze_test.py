@@ -4,7 +4,7 @@ import ValueLearning
 import Graphics
 
 def testMaze():
-    ValueLearning.DBG_LVL = 2
+    ValueLearning.DBG_LVL = 1
     # Create a Maze for the experiment
     nx = 20
     ny = 20
@@ -12,7 +12,7 @@ def testMaze():
     # Every location has an associated place field
     # TODO: Play around with having more/fewer place fields!
     nf = round(0.5 * (nx * ny))
-    nT = 20 # Training trials
+    nT = 40 # Training trials
     nN = 20  # Navigation trials
 
     # Build the maze
@@ -24,7 +24,7 @@ def testMaze():
     canvas.visualizePlaceFields(place_fields)
 
     # Learn how to navigate this Environment
-    (actor, critic) = ValueLearning.learnValueFunction(nT, maze, place_fields)
+    (actor, critic) = ValueLearning.learnValueFunction(nT, maze, place_fields, max_steps=2000)
 
     # Try a single trial on the same Maze and see how we do
     ValueLearning.DBG_LVL = 0

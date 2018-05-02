@@ -72,9 +72,8 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
         if (DBG_LVL > 0):
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
+            canvas.plotTrajectory()
             if (DBG_LVL > 1):
-                # TODO: Something goes wrong here and stops us from plotting n_steps
-                canvas.plotTrajectory()
                 canvas.plotValueFunction(place_fields, critic)
         
     Graphics.plot(n_steps)
