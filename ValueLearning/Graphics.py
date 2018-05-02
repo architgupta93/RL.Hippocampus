@@ -50,6 +50,9 @@ class MazeCanvas(object):
         self._t_stamp += 1
 
     def plotTrajectory(self):
+        self._anim_obj.plotStaticTR(object_type='line')
+    
+    def animateTrajectory(self):
         self._anim_obj.plotTimedTR(object_type='point')
     
     def plotValueFunction(self, place_fields, critic):
