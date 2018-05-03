@@ -36,16 +36,21 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
     else:
         assert(critic.getNFields() == len(place_fields))
 
-    # Path is visualized using a graphics object
-    canvas = Graphics.MazeCanvas(environment)
-
     n_steps  = np.zeros(n_trials, dtype=int)
     for trial in range(n_trials):
+        # Path is visualized using a graphics object
+        canvas = Graphics.MazeCanvas(environment)
+
         environment.redrawInitLocation()
+<<<<<<< HEAD
         current_state = environment.getCurrentState()
         if (DBG_LVL > 0):
             print('Initial state: (%d, %d)' % (current_state[0], current_state[1]))
 
+=======
+        initial_state = environment.getCurrentState()
+        canvas.update(initial_state)
+>>>>>>> master
         while not environment.reachedGoalState():
             if (n_steps[trial] > max_steps):
                 break
@@ -69,16 +74,20 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
             # Use the obtained reward to update the value
             new_environment_state   = environment.getCurrentState()
+            canvas.update(new_environment_state)
+
             new_pf_activity  = [pf.getActivity(new_environment_state) for pf in place_fields]
             prediction_error = critic.updateValue(pf_activity, new_pf_activity, reward)
             actor.updateWeights(pf_activity, prediction_error)
 
         if (DBG_LVL > 0):
-            canvas.plotValueFunction(place_fields, critic)
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
+            if (DBG_LVL > 1):
+                canvas.plotValueFunction(place_fields, critic)
         
-    Graphics.plot(n_steps)
-    return(actor, critic)
+    if (DBG_LVL > 0):
+        Graphics.plot(n_steps)
+    return(actor, critic, n_steps)
 
 def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
     """
@@ -87,34 +96,23 @@ def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
     - There is some code duplication because of this but it can't be helped
     """
 
-    # Path is visualized using a graphics object
-    canvas = Graphics.MazeCanvas(environment)
+    actor_was_learning = False
+    critic_was_learning = False
 
-    n_steps  = np.zeros(n_trials, dtype=int)
-    for trial in range(n_trials):
-        environment.redrawInitLocation()
-        while not environment.reachedGoalState():
-            if (n_steps[trial] > max_steps):
-                break
+    if actor.isLearning():
+        actor_was_learning = True
+        actor.unsetLearning()
 
-            n_steps[trial] += 1
-            current_state = environment.getCurrentState()
-            if DBG_LVL > 1:
-                print('On state: (%d, %d)' % (current_state[0], current_state[1]))
+    if critic.isLearning():
+        critic_was_learning = True
+        critic.unsetLearning()
 
-            # Get the place field activity based on the current location
-            pf_activity = [pf.getActivity(current_state) for pf in place_fields]
+    (_, _, n_steps) = learnValueFunction(n_trials, environment, place_fields, actor, critic, max_steps)
 
-            # Get an action based on the place field activity
-            next_action = actor.getAction(pf_activity)
-            if DBG_LVL > 1:
-                print('Selected Action: %s' % next_action)
+    if actor_was_learning:
+        actor.setLearning()
 
-            # Apply this action onto the environment
-            environment.move(next_action)
+    if critic_was_learning:
+        critic.setLearning()
 
-        if (DBG_LVL > 0):
-            canvas.plotValueFunction(place_fields, critic)
-            print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
-
-    Graphics.plot(n_steps)
+    return n_steps
