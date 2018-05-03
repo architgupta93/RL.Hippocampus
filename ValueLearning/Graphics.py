@@ -50,6 +50,7 @@ class MazeCanvas(object):
         self._t_stamp += 1
 
     def plotTrajectory(self):
+        self._anim_obj.setLims((self._min_x, self._max_x), (self._min_y, self._max_y))
         self._anim_obj.plotStaticTR(object_type='line')
     
     def animateTrajectory(self):
