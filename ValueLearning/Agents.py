@@ -7,11 +7,11 @@ class Agent(object):
     The output of the agent is a weighted sum of the input activity
     """
 
-    def __init__(self, fields):
+    def __init__(self, n_fields):
         # Learning parameters
         self._weight_scaling = 0.005
         self._weights   = np.zeros(())
-        self._n_fields  = len(fields)
+        self._n_fields  = n_fields
         self._is_learning = True
 
     def getValue(self, activity):
@@ -32,12 +32,12 @@ class Agent(object):
 class Actor(Agent):
     EPSILON = 1e-8
 
-    def __init__(self, actions, pfs):
+    def __init__(self, actions, n_fields):
         """
         Actor, takes in a place field activities and produces an action based
         on them
         """
-        super(Actor, self).__init__(pfs)
+        super(Actor, self).__init__(n_fields)
         self._actions = actions
         self._n_actions = len(actions)
         self._last_selected_action = None
@@ -106,12 +106,12 @@ class Actor(Agent):
             self._weights[last_action, pf] += self._weight_scaling * prediction_error * activity[pf]
 
 class Critic(Agent):
-    def __init__(self, pfs):
+    def __init__(self, n_fields):
         """
         Critic, takes in place field activities and produces an estimate for the
         current 'value' based on these
         """
-        super(Critic, self).__init__(pfs)
+        super(Critic, self).__init__(n_fields)
 
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic

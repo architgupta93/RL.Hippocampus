@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-N_CELLS_PER_FIELD = 10
+N_CELLS_PER_FIELD = 100
 
 def assignPlaceCells(n_cells, place_fields):
     """

@@ -18,6 +18,10 @@ def testMaze(nT, nN, learning_dbg_lvl=0, navigation_dbg_lvl=0):
     # Every location has an associated place field
     # TODO: Play around with having more/fewer place fields!
     n_fields = round(0.5 * (nx * ny))
+
+    # Instead of having multiple cells per field, here we can get away with
+    # having fewer place fields than the number of locations on the map (which
+    # makes sense which the fields are smeared across the space).
     n_cells  = n_fields
 
     # Build the maze
