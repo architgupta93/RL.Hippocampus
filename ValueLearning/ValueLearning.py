@@ -75,12 +75,12 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
         if (DBG_LVL > 0):
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
-            canvas.plotTrajectory()
             if (DBG_LVL > 1):
                 canvas.plotValueFunction(place_fields, critic)
         
-    Graphics.plot(n_steps)
-    return(actor, critic)
+    if (DBG_LVL > 0):
+        Graphics.plot(n_steps)
+    return(actor, critic, n_steps)
 
 def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
     """
@@ -100,10 +100,12 @@ def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
         critic_was_learning = True
         critic.unsetLearning()
 
-    learnValueFunction(n_trials, environment, place_fields, actor, critic, max_steps)
+    (_, _, n_steps) = learnValueFunction(n_trials, environment, place_fields, actor, critic, max_steps)
 
     if actor_was_learning:
         actor.setLearning()
 
     if critic_was_learning:
         critic.setLearning()
+
+    return n_steps
