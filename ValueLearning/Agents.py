@@ -7,7 +7,7 @@ class Agent(object):
     The output of the agent is a weighted sum of the input activity
     """
 
-    INITIAL_WEIGHT_VAR = 1.0
+    INITIAL_WEIGHT_VAR = 0.0001
 
     def __init__(self, n_fields):
         # Learning parameters
@@ -15,6 +15,9 @@ class Agent(object):
         self._weights   = np.zeros(())
         self._n_fields  = n_fields
         self._is_learning = True
+
+    def getWeights(self):
+        return self._weights
 
     def getValue(self, activity):
         return np.dot(self._weights, activity)

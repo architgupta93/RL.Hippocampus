@@ -94,3 +94,7 @@ def plot(*args):
     axes = new_figure.add_subplot(111)
     axes.plot(*args)
     plt.show()
+
+def histogram(data):
+    plt.hist(data, bins='auto', alpha=0.7)
+    plt.show()
