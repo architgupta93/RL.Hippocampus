@@ -42,13 +42,14 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
         canvas = Graphics.MazeCanvas(environment)
 
         environment.redrawInitLocation()
+        initial_state = environment.getCurrentState()
+        canvas.update(initial_state)
         while not environment.reachedGoalState():
             if (n_steps[trial] > max_steps):
                 break
 
             n_steps[trial] += 1
             current_state = environment.getCurrentState()
-            canvas.update(current_state)
             if DBG_LVL > 1:
                 print('On state: (%d, %d)' % (current_state[0], current_state[1]))
 
@@ -66,6 +67,8 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
             # Use the obtained reward to update the value
             new_environment_state   = environment.getCurrentState()
+            canvas.update(new_environment_state)
+
             new_pf_activity  = [pf.getActivity(new_environment_state) for pf in place_fields]
             prediction_error = critic.updateValue(pf_activity, new_pf_activity, reward)
             actor.updateWeights(pf_activity, prediction_error)
