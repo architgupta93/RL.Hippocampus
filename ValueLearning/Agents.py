@@ -50,6 +50,11 @@ class Actor(Agent):
         # factor which is also a part of the class now.
         self._previous_activity = None
         self._memory_factor = 0.5
+
+        # UPDATE: The action that was previously chosen (say E) gets a bump in
+        # its probability mimicking a 'momentum' term. It just captures the
+        # fact that animals probably like to keep going in one direction.
+        self._momentum_factor = 1.01
     
     def getAction(self, activity):
         # Experimenting with other monotonic functions
@@ -64,10 +69,8 @@ class Actor(Agent):
 
         # Method: 02
         # Go by the behavior and give more weight to the last selected action
-        """
         if self._last_selected_action is not None:
-            scaled_activity[self._last_selected_action] *= (2 + self._memory_factor)
-        """
+            scaled_activity[self._last_selected_action] *= self._momentum_factor
 
         action_weights  = np.exp(scaled_activity)
 

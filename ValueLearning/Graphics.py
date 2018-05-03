@@ -50,7 +50,9 @@ class MazeCanvas(object):
         self._t_stamp += 1
 
     def plotTrajectory(self):
-        self._anim_obj.setLims((self._min_x, self._max_x), (self._min_y, self._max_y))
+        # The -1 is just because of the way range() works. Start is included
+        # but end is not. This cuts out the first row and first column of data
+        self._anim_obj.setLims((self._min_x-1, self._max_x), (self._min_y-1, self._max_y))
         self._anim_obj.plotStaticTR(object_type='line')
     
     def animateTrajectory(self):
