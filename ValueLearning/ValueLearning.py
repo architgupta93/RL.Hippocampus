@@ -42,15 +42,8 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
         canvas = Graphics.MazeCanvas(environment)
 
         environment.redrawInitLocation()
-<<<<<<< HEAD
-        current_state = environment.getCurrentState()
-        if (DBG_LVL > 0):
-            print('Initial state: (%d, %d)' % (current_state[0], current_state[1]))
-
-=======
         initial_state = environment.getCurrentState()
         canvas.update(initial_state)
->>>>>>> master
         while not environment.reachedGoalState():
             if (n_steps[trial] > max_steps):
                 break
