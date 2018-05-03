@@ -40,17 +40,35 @@ class Actor(Agent):
         super(Actor, self).__init__(pfs)
         self._actions = actions
         self._n_actions = len(actions)
-        self._last_selected_action = -1
+        self._last_selected_action = None
         self._weights   = np.zeros((self._n_actions, self._n_fields), dtype=float)
+
+        # UPDATE: Instead of relying only on the current activity input, we are
+        # now assuming some hysterisis. This means that at the current time
+        # point, a decision is made by accumulating the present and the
+        # previous activities. Previous activity is scaled down by a scalar
+        # factor which is also a part of the class now.
+        self._previous_activity = None
+        self._memory_factor = 0.5
     
     def getAction(self, activity):
-        # The exponent here is a very messy function. it really messes up the
-        # numerics of this whole function.
-        # action_weights = np.exp(self.getValue(activity))
-
         # Experimenting with other monotonic functions
         baseline_activity = self.getValue(activity) 
         scaled_activity = (baseline_activity + self.EPSILON) / max(abs(baseline_activity) + self.EPSILON)
+
+        # Method: 01
+        # Include the memory effect
+        if self._previous_activity is not None:
+            scaled_activity += self._memory_factor * self._previous_activity
+        self._previous_activity = scaled_activity
+
+        # Method: 02
+        # Go by the behavior and give more weight to the last selected action
+        """
+        if self._last_selected_action is not None:
+            scaled_activity[self._last_selected_action] *= (2 + self._memory_factor)
+        """
+
         action_weights  = np.exp(scaled_activity)
 
         # Return the maximally weighted action
