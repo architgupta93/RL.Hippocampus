@@ -7,6 +7,8 @@ class Agent(object):
     The output of the agent is a weighted sum of the input activity
     """
 
+    INITIAL_WEIGHT_VAR = 1.0
+
     def __init__(self, n_fields):
         # Learning parameters
         self._weight_scaling = 0.005
@@ -41,7 +43,7 @@ class Actor(Agent):
         self._actions = actions
         self._n_actions = len(actions)
         self._last_selected_action = None
-        self._weights   = np.zeros((self._n_actions, self._n_fields), dtype=float)
+        self._weights   = self.INITIAL_WEIGHT_VAR * np.random.randn(self._n_actions, self._n_fields)
 
         # UPDATE: Instead of relying only on the current activity input, we are
         # now assuming some hysterisis. This means that at the current time
