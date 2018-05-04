@@ -89,6 +89,9 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
     if (DBG_LVL > 0):
         Graphics.plot(n_steps)
+    else:
+        print(np.mean(n_steps), np.std(n_steps))
+
     return(actor, critic, n_steps)
 
 def navigate(n_trials, environment, place_fields, actor, critic, max_steps):

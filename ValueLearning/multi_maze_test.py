@@ -11,7 +11,7 @@ def testMaze():
     """
     No comments here. Look at single_maze_test.py for more details!
     """
-    ValueLearning.DBG_LVL = 1
+    ValueLearning.DBG_LVL = 0
 
     nx = 10
     ny = 10
@@ -19,12 +19,12 @@ def testMaze():
     n_fields = round(0.5 * nx * ny)
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
-    n_training_trials = 5
+    n_training_trials = 20
     n_navigation_trials = 10
 
-    n_alternations = 10
+    n_alternations = 1
     max_nav_steps = 100
-    max_train_steps = 20
+    max_train_steps = 200
 
     # First Environment: Has its own place cells and place fields
     env_E1          = Environment.RandomGoalOpenField(nx, ny)
@@ -65,12 +65,17 @@ def testMaze():
         (actor, critic, steps_E2) = ValueLearning.learnValueFunction(n_training_trials, env_E2, place_cells_E2, actor, critic, max_train_steps)
         learning_steps_E2[alt] = np.mean(steps_E2)
 
-    canvas_E1.plotValueFunction(place_cells_E1, critic)
-    canvas_E2.plotValueFunction(place_cells_E2, critic)
+    # canvas_E1.plotValueFunction(place_cells_E1, critic)
+    # canvas_E2.plotValueFunction(place_cells_E2, critic)
 
-    # Plot a histogram of the weightS
-    critic_weights = np.reshape(critic.getWeights(), -1)
-    Graphics.histogram(critic_weights)
+    # Plot a histogram of the weights
+    # Critic
+    # critic_weights = np.reshape(critic.getWeights(), -1)
+    # Graphics.histogram(critic_weights)
+
+    # Actor
+    actor_weights = np.reshape(actor.getWeights(), -1)
+    Graphics.histogram(actor_weights)
 
     # Look at how the steps taken during learning varied
     Graphics.plot(learning_steps_E1)
@@ -78,7 +83,7 @@ def testMaze():
 
     # After alternation, check the behavior on both the tasks
     n_trials = n_navigation_trials
-    ValueLearning.DBG_LVL = 1
+    ValueLearning.DBG_LVL = 0
     print('Navigating Environment A')
     ValueLearning.navigate(n_trials, env_E1, place_cells_E1, actor, critic, max_nav_steps)
 
