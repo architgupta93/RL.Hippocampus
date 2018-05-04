@@ -83,8 +83,8 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
                 canvas.plotValueFunction(place_fields, critic)
         
                 # Plot a histogram of the weightS
-                actor_weights = np.reshape(actor.getWeights(), -1)
-                Graphics.histogram(actor_weights)
+                critic_weights = np.reshape(critic.getWeights(), -1)
+                Graphics.histogram(critic_weights)
 
 
     if (DBG_LVL > 0):

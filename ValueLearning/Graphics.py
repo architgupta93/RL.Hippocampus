@@ -72,8 +72,8 @@ class MazeCanvas(object):
             centers[idx, 1] = pf_center[1]
 
         # TODO: This needs to be generalized to take non-integer locations?
-        x_locs = np.linspace(self._min_x, self._max_x, 100)
-        y_locs = np.linspace(self._min_y, self._max_y, 100)
+        x_locs = np.linspace(self._min_x, self._max_x)
+        y_locs = np.linspace(self._min_y, self._max_y)
         values = np.zeros((len(x_locs), len(y_locs)), dtype=float)
         for xi, px in enumerate(x_locs):
             for yj, py in enumerate(y_locs):

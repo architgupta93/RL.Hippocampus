@@ -22,7 +22,7 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     # Instead of having multiple cells per field, here we can get away with
     # having fewer place fields than the number of locations on the map (which
     # makes sense which the fields are smeared across the space).
-    n_cells  = n_fields
+    n_cells  = n_fields* Hippocampus.N_CELLS_PER_FIELD
 
     # Build the maze
     maze  = Environment.RandomGoalOpenField(nx, ny)
@@ -31,7 +31,7 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     # Generate a set of place fields for the environment
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields) 
     place_cells  = Hippocampus.assignPlaceCells(n_cells, place_fields)
-    if (learning_dbg_lvl > 0):
+    if (learning_dbg_lvl > 1):
         canvas.visualizePlaceFields(place_cells)
 
     # Learn how to navigate this Environment
@@ -59,7 +59,7 @@ class MazeThread(threading.Thread):
 if __name__ == "__main__":
     # For reasonable data
     n_epochs = 1
-    n_training_trials = 40 # Training trials
+    n_training_trials = 20 # Training trials
     n_navigation_trials = 20  # Navigation trials
 
     # For quick trials
