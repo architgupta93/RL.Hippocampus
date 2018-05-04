@@ -58,11 +58,9 @@ class MazeThread(threading.Thread):
 
 if __name__ == "__main__":
     # For reasonable data
-    """
-    n_epochs = 40
+    n_epochs = 1
     n_training_trials = 40 # Training trials
     n_navigation_trials = 20  # Navigation trials
-    """
 
     # For quick trials
     """
@@ -72,9 +70,11 @@ if __name__ == "__main__":
     """
 
     # Single trial
+    """
     n_epochs = 1
     n_training_trials = 40 # Training trials
     n_navigation_trials = 20  # Navigation trials
+    """
 
     threads = [None] * n_epochs
 
@@ -110,13 +110,20 @@ if __name__ == "__main__":
     err_training_steps = np.std(training_steps, axis=1)
     err_navigation_steps = np.std(navigation_steps, axis=1)
 
-    training_fig = pl.figure(0)
+    training_fig = pl.figure()
     training_ax = training_fig.add_subplot(111)
     training_ax.errorbar(range(n_training_trials), mean_training_steps, yerr=err_training_steps, marker='d', ecolor='black', capsize=0.5)
+    training_ax.set_xlabel('Trials')
+    training_ax.set_ylabel('Latency')
+    training_ax.grid(True)
+    pl.show()
 
-    navigation_fig = pl.figure(1)
+    navigation_fig = pl.figure()
     navigation_ax = navigation_fig.add_subplot(111)
     navigation_ax.errorbar(range(n_navigation_trials), mean_navigation_steps, yerr=err_navigation_steps, marker='o', ecolor='black', capsize=0.5)
+    navigation_ax.set_xlabel('Trials')
+    navigation_ax.set_ylabel('Latency')
+    navigation_ax.grid(True)
     pl.show()
 
     print('Execution complete. Exiting!')

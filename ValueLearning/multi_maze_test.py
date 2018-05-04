@@ -19,12 +19,12 @@ def testMaze():
     n_fields = round(0.5 * nx * ny)
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
-    n_training_trials = 1
+    n_training_trials = 10
     n_navigation_trials = 10
 
-    n_alternations = 40
+    n_alternations = 1
     max_nav_steps = 100
-    max_train_steps = 10
+    max_train_steps = 1000
 
     # First Environment: Has its own place cells and place fields
     env_E1          = Environment.RandomGoalOpenField(nx, ny)

@@ -10,7 +10,7 @@
             "type": "python",
             "request": "launch",
             "cwd": "${workspaceFolder}/ValueLearning/",
-            "program": "${workspaceFolder}/ValueLearning/single_maze_test.py",
+            "program": "${file}",
             "args": [
             ]
         }
