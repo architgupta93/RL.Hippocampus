@@ -1,3 +1,21 @@
+[PENDING]
+1.  Something funny is going on with the weights when we are learning a
+    specific task. Plot a histogram of the weights and see how they are
+    distributed at different points in learning. This has direct implications
+    to how well multiple environments can be learnt.
+
+2.  In case of multiple environments with very few steps allowed in each
+    environment in a given alternation, critic learns different value functions
+    pretty easily. However, the actor is not able to learn the correct weights to
+    make a differentiation in actions for the two different environments.
+
+3.  Sometimes, the values encoded by the critic also blow up dramatically.
+    What is going on here. It just occured to me that value iteration does
+    take a lot longer to converge than policy iteration. And policy iteration
+    does give you the correct 'behavior'. Stopping well before values
+    saturate is certainly a good idea in this case.
+
+[DONE]
 1.  Start with random initial values for the critic instead of starting with
     all zeros.
 

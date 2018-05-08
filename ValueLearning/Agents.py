@@ -7,12 +7,17 @@ class Agent(object):
     The output of the agent is a weighted sum of the input activity
     """
 
-    def __init__(self, fields):
+    INITIAL_WEIGHT_VAR = 0.00
+
+    def __init__(self, n_fields):
         # Learning parameters
         self._weight_scaling = 0.005
         self._weights   = np.zeros(())
-        self._n_fields  = len(fields)
+        self._n_fields  = n_fields
         self._is_learning = True
+
+    def getWeights(self):
+        return self._weights
 
     def getValue(self, activity):
         return np.dot(self._weights, activity)
@@ -32,16 +37,17 @@ class Agent(object):
 class Actor(Agent):
     EPSILON = 1e-8
 
-    def __init__(self, actions, pfs):
+    def __init__(self, actions, n_fields):
         """
         Actor, takes in a place field activities and produces an action based
         on them
         """
-        super(Actor, self).__init__(pfs)
+        super(Actor, self).__init__(n_fields)
         self._actions = actions
         self._n_actions = len(actions)
         self._last_selected_action = None
-        self._weights   = np.zeros((self._n_actions, self._n_fields), dtype=float)
+        self._weight_scaling = 0.01
+        self._weights   = self.INITIAL_WEIGHT_VAR * np.random.randn(self._n_actions, self._n_fields)
 
         # UPDATE: Instead of relying only on the current activity input, we are
         # now assuming some hysterisis. This means that at the current time
@@ -119,20 +125,21 @@ class RandomAgent(Actor):
 
 
 class Critic(Agent):
-    def __init__(self, pfs):
+    def __init__(self, n_fields):
         """
         Critic, takes in place field activities and produces an estimate for the
         current 'value' based on these
         """
-        super(Critic, self).__init__(pfs)
+        super(Critic, self).__init__(n_fields)
 
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
+        self.INITIAL_WEIGHT_VAR = 0.1
         self._learning_rate   = 0.02
         self._discount_factor = 0.9
 
         # Weights to map place field activities to value
-        self._weights  = np.zeros(self._n_fields, dtype=float)
+        self._weights  = self.INITIAL_WEIGHT_VAR * np.random.randn(self._n_fields)
 
     def updateValue(self, activity, new_activity, reward):
         """

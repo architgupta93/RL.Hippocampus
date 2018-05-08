@@ -27,12 +27,12 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
     # Set up the actor and critic based on the place fields
     if actor is None:
-        actor = Agents.Actor(environment.getActions(), place_fields) 
+        actor = Agents.Actor(environment.getActions(), len(place_fields)) 
     else:
         assert(actor.getNFields() == len(place_fields))
 
     if critic is None:
-        critic = Agents.Critic(place_fields)
+        critic = Agents.Critic(len(place_fields))
     else:
         assert(critic.getNFields() == len(place_fields))
 
@@ -75,11 +75,23 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
         if (DBG_LVL > 0):
             print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
-            if (DBG_LVL > 1):
+            # At debug level 1, only the first and the last trajectories, and
+            # corresponding value functions are shown. At higher debug levels,
+            # the entire trajectory is shown for every iteration
+            if (DBG_LVL > 1) or (trial == 0) or (trial == n_trials-1):
+                canvas.plotTrajectory()
                 canvas.plotValueFunction(place_fields, critic)
         
+                # Plot a histogram of the weightS
+                critic_weights = np.reshape(critic.getWeights(), -1)
+                Graphics.histogram(critic_weights)
+
+
     if (DBG_LVL > 0):
         Graphics.plot(n_steps)
+    else:
+        print(np.mean(n_steps), np.std(n_steps))
+
     return(actor, critic, n_steps)
 
 def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
