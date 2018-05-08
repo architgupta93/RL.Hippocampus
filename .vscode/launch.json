@@ -5,13 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Value Learning",
-            "pythonPath": "/usr/bin/python",
+            "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "cwd": "${workspaceFolder}/ValueLearning/",
-            "program": "${workspaceFolder}/ValueLearning/single_maze_test.py",
-            "args": [
+            "stopOnEntry": false,
+            "pythonPath": "${config:python.pythonPath}",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}/ValueLearning",
+            "env": {"PYTHONPATH":"${workspaceFolder}/ValueLearning"},
+            "debugOptions": [
+                "RedirectOutput"
             ]
         }
     ]

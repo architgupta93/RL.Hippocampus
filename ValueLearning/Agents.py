@@ -105,6 +105,19 @@ class Actor(Agent):
         for pf in range(self._n_fields):
             self._weights[last_action, pf] += self._weight_scaling * prediction_error * activity[pf]
 
+class RandomAgent(Actor):
+    """
+    A random agent for testing Value updates independent of the Actor's
+    policies for exploring the state-space
+    """
+
+    def __init__(self, actions, pfs):
+        super(RandomAgent, self).__init__(actions, pfs)
+
+    def getAction(self, pf_activity):
+        return random.sample(self._actions, 1)
+
+
 class Critic(Agent):
     def __init__(self, pfs):
         """
