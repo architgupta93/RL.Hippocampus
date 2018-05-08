@@ -63,21 +63,13 @@ class MazeCanvas(object):
     def animateTrajectory(self):
         self._anim_obj.plotTimedTR(object_type='point')
     
-    def plotValueFunction(self, place_fields, critic):
-        n_fields = len(place_fields)
-        centers  = np.zeros((n_fields, 2), dtype=float)
-        for idx, pf in enumerate(place_fields):
-            pf_center = pf.getCenter()
-            centers[idx, 0] = pf_center[0]
-            centers[idx, 1] = pf_center[1]
-
-        # TODO: This needs to be generalized to take non-integer locations?
+    def plotValueFunction(self, place_cells, critic):
         x_locs = np.linspace(self._min_x, self._max_x)
         y_locs = np.linspace(self._min_y, self._max_y)
         values = np.zeros((len(x_locs), len(y_locs)), dtype=float)
         for xi, px in enumerate(x_locs):
             for yj, py in enumerate(y_locs):
-                pf_activity = [pf.getActivity((px, py)) for pf in place_fields]
+                pf_activity = [pf.getActivity((px, py)) for pf in place_cells]
                 values[xi, yj] = 1000 * critic.getValue(pf_activity)
         
         X, Y = np.meshgrid(x_locs, y_locs)

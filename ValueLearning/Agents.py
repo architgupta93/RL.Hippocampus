@@ -117,11 +117,12 @@ class RandomAgent(Actor):
     policies for exploring the state-space
     """
 
-    def __init__(self, actions, pfs):
-        super(RandomAgent, self).__init__(actions, pfs)
+    def __init__(self, actions, n_fields):
+        super(RandomAgent, self).__init__(actions, n_fields)
+        self._is_learning = False
 
     def getAction(self, pf_activity):
-        return random.sample(self._actions, 1)
+        return random.sample(self._actions, 1)[0]
 
 
 class Critic(Agent):
@@ -163,3 +164,13 @@ class Critic(Agent):
                 self._weights[pf] += self._weight_scaling * prediction_error * new_activity[pf]
         
         return prediction_error
+
+class IdealValueFunction(Critic):
+    """
+    Instead of computing the Value function iteratively, this generates the
+    ideal value function that a Critic should converge to. Good for checking
+    correctness.
+    """
+
+    def __init__(self, n_fields):
+        super(IdealValueFunction, self).__init__(n_fields)

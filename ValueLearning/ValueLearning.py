@@ -5,14 +5,14 @@ import numpy as np
 
 DBG_LVL = 0
 
-def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=None, max_steps=np.Inf):
+def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=None, max_steps=np.Inf):
     """
     Main function responsible for learning value function for a given environment
     INPUTS:
     -------
     n_trials: (INTEGER) Number of trials allowed on the task
     environment: (Maze) Physical space in which the task has to be learnt
-    place_fields: (PlaceField) Entity that encodes a particular location
+    place_cells: (PlaceCell) Entity that encodes a particular location as a population
 
     <OPTIONAL INPUTS>
     actor: Pre-trained actor
@@ -27,14 +27,14 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
     # Set up the actor and critic based on the place fields
     if actor is None:
-        actor = Agents.Actor(environment.getActions(), len(place_fields)) 
+        actor = Agents.Actor(environment.getActions(), len(place_cells)) 
     else:
-        assert(actor.getNFields() == len(place_fields))
+        assert(actor.getNFields() == len(place_cells))
 
     if critic is None:
-        critic = Agents.Critic(len(place_fields))
+        critic = Agents.Critic(len(place_cells))
     else:
-        assert(critic.getNFields() == len(place_fields))
+        assert(critic.getNFields() == len(place_cells))
 
     n_steps  = np.zeros(n_trials, dtype=int)
     for trial in range(n_trials):
@@ -54,7 +54,7 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
                 print('On state: (%d, %d)' % (current_state[0], current_state[1]))
 
             # Get the place field activity based on the current location
-            pf_activity = [pf.getActivity(current_state) for pf in place_fields]
+            pf_activity = [pf.getActivity(current_state) for pf in place_cells]
 
             # Get an action based on the place field activity
             next_action = actor.getAction(pf_activity)
@@ -69,7 +69,7 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
             new_environment_state   = environment.getCurrentState()
             canvas.update(new_environment_state)
 
-            new_pf_activity  = [pf.getActivity(new_environment_state) for pf in place_fields]
+            new_pf_activity  = [pf.getActivity(new_environment_state) for pf in place_cells]
             prediction_error = critic.updateValue(pf_activity, new_pf_activity, reward)
             actor.updateWeights(pf_activity, prediction_error)
 
@@ -80,7 +80,7 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
             # the entire trajectory is shown for every iteration
             if (DBG_LVL > 1) or (trial == 0) or (trial == n_trials-1):
                 canvas.plotTrajectory()
-                canvas.plotValueFunction(place_fields, critic)
+                canvas.plotValueFunction(place_cells, critic)
         
                 # Plot a histogram of the weightS
                 critic_weights = np.reshape(critic.getWeights(), -1)
@@ -94,7 +94,7 @@ def learnValueFunction(n_trials, environment, place_fields, actor=None, critic=N
 
     return(actor, critic, n_steps)
 
-def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
+def navigate(n_trials, environment, place_cells, actor, critic, max_steps):
     """
     This function navigates through an environment with a given actor and a critic
     - Performs a subset of operations of learnValueFunction
@@ -112,7 +112,7 @@ def navigate(n_trials, environment, place_fields, actor, critic, max_steps):
         critic_was_learning = True
         critic.unsetLearning()
 
-    (_, _, n_steps) = learnValueFunction(n_trials, environment, place_fields, actor, critic, max_steps)
+    (_, _, n_steps) = learnValueFunction(n_trials, environment, place_cells, actor, critic, max_steps)
 
     if actor_was_learning:
         actor.setLearning()
