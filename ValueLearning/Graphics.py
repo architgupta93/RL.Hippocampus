@@ -78,8 +78,8 @@ class MazeCanvas(object):
         fig = plt.figure()
         ax  = fig.add_subplot(111, projection='3d')
         ax.plot_surface(X, Y, values)
-        ax.set_xlabel('y')
-        ax.set_ylabel('x')
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
         # ax.set_zlabel('V(x, y)')
 
         # Set the format for the axes ticks

@@ -13,8 +13,8 @@ def testMaze(n_train, n_nav):
     ValueLearning.DBG_LVL = 1
 
     # Experiment parameters
-    nx = 10
-    ny = 10
+    nx = 12
+    ny = 11
     n_fields = round(1.0 * nx * ny)
     n_cells  = n_fields
 
