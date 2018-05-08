@@ -30,8 +30,7 @@ def testMaze():
     env_E1          = Environment.RandomGoalOpenField(nx, ny)
     place_fields_E1 = Hippocampus.setupPlaceFields(env_E1, n_fields)
     place_cells_E1  = Hippocampus.assignPlaceCells(n_cells, place_fields_E1)
-    canvas_E1       = Graphics.MazeCanvas(env_E1)
-
+    # canvas_E1       = Graphics.MazeCanvas(env_E1)
     # canvas_E1.visualizePlaceFields(place_cells_E1)
 
     # Create empty actors and critics
@@ -43,7 +42,7 @@ def testMaze():
     env_E2          = Environment.RandomGoalOpenField(nx, ny)
     place_fields_E2 = Hippocampus.setupPlaceFields(env_E2, n_fields)
     place_cells_E2  = Hippocampus.assignPlaceCells(n_cells, place_fields_E2)
-    canvas_E2       = Graphics.MazeCanvas(env_E2)
+    # canvas_E2       = Graphics.MazeCanvas(env_E2)
 
     learning_steps_E1 = np.zeros((n_alternations, 1), dtype=float)
     learning_steps_E2 = np.zeros((n_alternations, 1), dtype=float)
