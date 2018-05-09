@@ -13,8 +13,8 @@ def testMaze(n_train, n_nav):
     ValueLearning.DBG_LVL = 1
 
     # Experiment parameters
-    nx = 12
-    ny = 11
+    nx = 5
+    ny = 2
     n_fields = round(1.0 * nx * ny)
     n_cells  = n_fields
 
@@ -25,6 +25,7 @@ def testMaze(n_train, n_nav):
     # Generate place fields and place cells
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields)
     place_cells  = Hippocampus.assignPlaceCells(n_cells, place_fields)
+    canvas.visualizePlaceFields(place_cells)
 
     # Create Actor and Critic
     actor  = Agents.RandomAgent(maze.getActions(), n_cells)

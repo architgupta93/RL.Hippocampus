@@ -24,7 +24,7 @@ class MazeCanvas(object):
         self._max_y    = maze_bounds[3]
         # plt.ion()
     
-    def visualizePlaceFields(self, place_fields):
+    def visualizePlaceFields(self, place_cells):
         """
         Show place cell activity for all the positions on the maze
         """
@@ -34,7 +34,7 @@ class MazeCanvas(object):
         activity = np.zeros((len(x_locs), len(y_locs)), dtype=float)
         for xi, px in enumerate(x_locs):
             for yj, py in enumerate(y_locs):
-                activity[xi, yj] = sum([pf.getActivity((px, py)) for pf in place_fields])
+                activity[xi, yj] = sum([pf.getActivity((px, py)) for pf in place_cells])
 
         X, Y = np.meshgrid(x_locs, y_locs)
         # 3D Figure, needs some effort
@@ -64,15 +64,21 @@ class MazeCanvas(object):
         self._anim_obj.plotTimedTR(object_type='point')
     
     def plotValueFunction(self, place_cells, critic):
-        x_locs = np.linspace(self._min_x, self._max_x)
-        y_locs = np.linspace(self._min_y, self._max_y)
+        # Scale the number of data points in each dimension independently
+        nx_pts = round((self._max_x - self._min_x))
+        ny_pts = round((self._max_y - self._min_y))
+        x_locs = np.linspace(self._min_x, self._max_x, num=nx_pts)
+        y_locs = np.linspace(self._min_y, self._max_y, num=ny_pts)
+
+        # Have never quite understood why Meshgrid works in such a wierd way
         values = np.zeros((len(x_locs), len(y_locs)), dtype=float)
         for xi, px in enumerate(x_locs):
             for yj, py in enumerate(y_locs):
                 pf_activity = [pf.getActivity((px, py)) for pf in place_cells]
-                values[xi, yj] = 1000 * critic.getValue(pf_activity)
+                values[xi, yj] = critic.getValue(pf_activity)
         
-        X, Y = np.meshgrid(x_locs, y_locs)
+        print(values)
+        Y, X = np.meshgrid(y_locs, x_locs)
 
         # 3D Figure, needs some effort
         fig = plt.figure()
