@@ -29,14 +29,14 @@ class MazeCanvas(object):
         Show place cell activity for all the positions on the maze
         """
 
-        x_locs = np.linspace(self._min_x, self._max_x, 100)
-        y_locs = np.linspace(self._min_y, self._max_y, 100)
+        x_locs = np.linspace(self._min_x, self._max_x-1, 100)
+        y_locs = np.linspace(self._min_y, self._max_y-1, 100)
         activity = np.zeros((len(x_locs), len(y_locs)), dtype=float)
         for xi, px in enumerate(x_locs):
             for yj, py in enumerate(y_locs):
                 activity[xi, yj] = sum([pf.getActivity((px, py)) for pf in place_cells])
 
-        X, Y = np.meshgrid(x_locs, y_locs)
+        Y, X = np.meshgrid(y_locs, x_locs)
         # 3D Figure, needs some effort
         fig = plt.figure()
         ax  = fig.add_subplot(111, projection='3d')
