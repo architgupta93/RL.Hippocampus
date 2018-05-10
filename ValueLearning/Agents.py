@@ -135,9 +135,9 @@ class Critic(Agent):
 
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
-        self.INITIAL_WEIGHT_VAR = 0.1
+        self.INITIAL_WEIGHT_VAR = 0.0
         self._learning_rate   = 0.02
-        self._discount_factor = 0.9
+        self._discount_factor = 1.00
 
         # Weights to map place field activities to value
         self._weights  = self.INITIAL_WEIGHT_VAR * np.random.randn(self._n_fields)
@@ -161,7 +161,7 @@ class Critic(Agent):
 
         if self._is_learning:
             for pf in range(self._n_fields):
-                self._weights[pf] += self._weight_scaling * prediction_error * new_activity[pf]
+                self._weights[pf] += self._weight_scaling * prediction_error * activity[pf]
         
         return prediction_error
 

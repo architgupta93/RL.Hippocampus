@@ -23,7 +23,7 @@ class MazeCanvas(object):
         self._min_y    = maze_bounds[1]
         self._max_y    = maze_bounds[3]
         # plt.ion()
-    
+
     def visualizePlaceFields(self, place_cells):
         """
         Show place cell activity for all the positions on the maze
@@ -65,8 +65,8 @@ class MazeCanvas(object):
     
     def plotValueFunction(self, place_cells, critic):
         # Scale the number of data points in each dimension independently
-        nx_pts = round((self._max_x - self._min_x))
-        ny_pts = round((self._max_y - self._min_y))
+        nx_pts = round(20 * (self._max_x - self._min_x))
+        ny_pts = round(20 * (self._max_y - self._min_y))
         x_locs = np.linspace(self._min_x, self._max_x, num=nx_pts)
         y_locs = np.linspace(self._min_y, self._max_y, num=ny_pts)
 
@@ -77,7 +77,7 @@ class MazeCanvas(object):
                 pf_activity = [pf.getActivity((px, py)) for pf in place_cells]
                 values[xi, yj] = critic.getValue(pf_activity)
         
-        print(values)
+        # print(values)
         Y, X = np.meshgrid(y_locs, x_locs)
 
         # 3D Figure, needs some effort

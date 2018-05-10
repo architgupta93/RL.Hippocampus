@@ -14,12 +14,15 @@ class Maze(object):
         self._nx = nx
         self._ny = ny
         self._state = [0, 0]
-        self._action_map = {'E':(-1, 0), 'W':(1,0), 'N':(0,1), 'S':(0,-1)}
+        self._action_map = {'E':(-0.1, 0), 'W':(0.1,0), 'N':(0,0.1), 'S':(0,-0.1)}
         self._n_states = self._nx * self._ny
     
         # Placeholders for the goal location(s) and initial location(s)
         self._goal_locations = []
         self._init_locations = []
+
+        # Distance from the goal at which you are declared to have reached it
+        self._goal_th  = 0.2
 
     def getBounds(self):
         return(0, 0, self._nx, self._ny)
@@ -163,4 +166,4 @@ class RandomGoalOpenField(Maze):
     def reachedGoalState(self):
         # There is just ONE goal location, nothing complicated here
         goal_location = self._goal_locations[0]
-        return ((self._state[0] == goal_location[0]) and (self._state[1] == goal_location[1]))
+        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] == goal_location[1], 2) < pow(self._goal_th, 2)))

@@ -31,7 +31,7 @@ def testMaze(n_train, n_nav):
     actor  = Agents.RandomAgent(maze.getActions(), n_cells)
     critic = Agents.Critic(n_fields)
 
-    ValueLearning.learnValueFunction(n_train, maze, place_cells, actor, critic, max_steps=200)
+    ValueLearning.learnValueFunction(n_train, maze, place_cells, actor, critic, max_steps=1000)
     # canvas.plotValueFunction(place_cells, critic)
 
 class MazeThread(threading.Thread):
