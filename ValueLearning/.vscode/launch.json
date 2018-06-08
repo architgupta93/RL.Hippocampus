@@ -8,6 +8,9 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
+            "env": {
+                "PYTHONPATH":"${workspaceFolder}"
+            },
             "program": "${file}"
         }
     ]

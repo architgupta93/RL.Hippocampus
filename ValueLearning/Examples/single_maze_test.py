@@ -36,11 +36,11 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
         canvas.visualizePlaceFields(place_cells)
 
     # Learn how to navigate this Environment
-    (actor, critic, learning_steps) = ValueLearning.learnValueFunction(nT, maze, place_cells, max_steps=200)
+    (actor, critic, learning_steps) = ValueLearning.learnValueFunction(nT, maze, place_cells, max_steps=1000)
 
     # Try a single trial on the same Maze and see how we do
     ValueLearning.DBG_LVL = navigation_dbg_lvl
-    navigation_steps = ValueLearning.navigate(nN, maze, place_cells, actor, critic, max_steps=20)
+    navigation_steps = ValueLearning.navigate(nN, maze, place_cells, actor, critic, max_steps=100)
     return (learning_steps, navigation_steps)
 
 class MazeThread(threading.Thread):
@@ -60,7 +60,7 @@ class MazeThread(threading.Thread):
 if __name__ == "__main__":
     # For reasonable data
     n_epochs = 1
-    n_training_trials = 20 # Training trials
+    n_training_trials = 40 # Training trials
     n_navigation_trials = 20  # Navigation trials
 
     # For quick trials

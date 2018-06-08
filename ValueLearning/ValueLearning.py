@@ -80,7 +80,8 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
             # the entire trajectory is shown for every iteration
             if (DBG_LVL > 1) or (trial == 0) or (trial == n_trials-1):
                 canvas.plotTrajectory()
-                canvas.plotValueFunction(place_cells, critic)
+                # This takes extremely long when using a population of neurons
+                # canvas.plotValueFunction(place_cells, critic)
         
                 # Plot a histogram of the weightS
                 critic_weights = np.reshape(critic.getWeights(), -1)
