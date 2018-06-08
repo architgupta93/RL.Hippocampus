@@ -1,0 +1,38 @@
+We're trying to see if navigation can be explained by a very simple framework
+of Value Learning. We already know that value learning can explain navigation
+through an open field towards a fixed goal. We want to see how realistic this
+model is when other known facts about navigational mechanisms are brought in.
+
+Original Model
+==============
+
+- 2D space (something like a 10x10 grid) in which 1 point is the 'goal'.
+- The animal makes fixed-sized 'legal' jumps in the environment.
+- N neurons have place fields in space, their output is used for navigation.
+- A representation of dopamine-like value representation which is learnt.
+- A 'decision-making' neuron which controls actions.
+
+- Weights in this network are learnt using TD learning.
+
+Modifications
+=============
+
+1. Population Code for location
+-------------------------------
+
+- Instead of a single neurons representing a place field, a population of
+  neurons shares the same place field. In order to achieve this, first a place
+  field is determined and then a fixed number of neurons are selected from an
+  ensemble and assigned to it.
+
+- Currently working with 100 Neurons per place field.
+
+2. Remapping of cells across environments
+-----------------------------------------
+
+- It is known that when an animal goes from one environment to another,
+  individual cells are reassigned to fields in the new environment at random.
+
+- If the previous connection to the 'actor' (decision) and 'critic' (value
+  representation) are preserved, how does this affect learning in the new
+  environment?
