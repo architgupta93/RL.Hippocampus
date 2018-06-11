@@ -1,6 +1,9 @@
 import numpy as np
 import random
 
+# Graphics
+import matplotlib.pyplot as plt
+
 class Maze(object):
     """
     Defines a rectangular maze for a navigation task
@@ -124,12 +127,30 @@ class Maze(object):
 
         plt.show()
 
-    # Abstract functions to be implemented by child classes
     def redrawInitLocation(self):
-        raise NotImplementedError
+        # Single, random start location inside the maze
+        self._init_locations = [self._getValidLocation()]
+
+        # Pick on the the initial locations
+        initial_state = random.sample(self._init_locations, 1)[0]
+        self._state[0] = initial_state[0]
+        self._state[1] = initial_state[1]
+
+        return
 
     def redrawGoalLocation(self):
-        raise NotImplementedError
+        # Have a single, random goal location inside the maze
+        self._goal_locations = [self._getValidLocation()]
+
+        # Print the goal location
+        goal_location = self._goal_locations[0]
+        print('Goal location: (%d, %d)' % (goal_location[0], goal_location[1]))
+
+        return
+
+    # Abstract functions to be implemented by child classes
+    def _getValidLocation(self):
+        raise NotImplementedError()
 
     def reachedGoalState(self):
         raise NotImplementedError
@@ -142,28 +163,73 @@ class RandomGoalOpenField(Maze):
         self.redrawInitLocation()
         return
 
-    def redrawGoalLocation(self):
-        # Have a single, random goal location inside the maze
-        self._goal_locations = [(np.random.randint(0, self._nx), np.random.randint(0,self._ny))]
-
-        # Print the goal location
-        goal_location = self._goal_locations[0]
-        print('Goal location: (%d, %d)' % (goal_location[0], goal_location[1]))
-
-        return
-
-    def redrawInitLocation(self):
-        # Single, random start location inside the maze
-        self._init_locations = [(np.random.randint(0, self._nx), np.random.randint(0, self._ny))]
-
-        # Pick on the the initial locations
-        initial_state = random.sample(self._init_locations, 1)[0]
-        self._state[0] = initial_state[0]
-        self._state[1] = initial_state[1]
-
-        return
+    def _getValidLocation(self):
+        # Return any point at random from the field
+        return (np.random.randint(0, self._nx), np.random.randint(0,self._ny))
     
     def reachedGoalState(self):
         # There is just ONE goal location, nothing complicated here
         goal_location = self._goal_locations[0]
         return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] == goal_location[1], 2) < pow(self._goal_th, 2)))
+
+class Wall(object):
+    """
+    A structure in a 2D environment that can be used to obstruct free path.
+    """
+
+    # The walls are not 1D lines, they have some thickness. This is modelled by
+    # checking the angle of a point with the two ends and if it lies in a
+    # certain range, the point is declared to be within the line.
+    _INCLUSION_RATIO = 0.1
+
+    def __init__(self, start, end):
+        # Class constructor: Takes the two end points of the wall (start and
+        # end). Each endpoint is a set of 2 numbers (x, y).
+        self._start = start
+        self._end   = end
+
+    def includesPoint(self, pt):
+        # Check if the wall segment includes the specified point
+        return True
+
+    def crosses(self, other_wall):
+        # Check if this wall segment crosses the segment 'other_wall'. This can
+        # be useful in determining if a step being taken by an agent is legal.
+        return True
+
+class MazeWithWalls(Maze):
+    """
+    A Maze with obstacles in the path. The open maze task is too simple to
+    see any learning happening. In the absence of anything interesting,
+    debugging was becoming increasingly difficult. Having a more difficult
+    task would be a better way to assess what is going on.
+    """
+    def __init__(self, nx, ny):
+        # Class constructor
+        super(MazeWithWalls, self).__init__(nx, ny)
+
+        # Initialize a empty list of walls. Walls can be added later
+        self._walls = list()
+
+    def addWall(self, wall):
+        self._walls.append(wall)
+
+    def _getValidLocation(self):
+        # Get a location that is not coincident with any of the walls in the
+        # maze. Can be reused for both getting final and initial locations for
+        # the task.
+        location = None
+        is_invalid = True
+
+        while (is_invalid):
+            # Have a single, random goal location inside the maze
+            is_invalid = False
+            location = (np.random.randint(0, self._nx), np.random.randint(0,self._ny))
+            for wall in self._walls:
+                if wall.includesPoint(goal_location):
+                    is_invalid = True
+                    break
+        return location
+
+    def getLegalActions(self):
+        raise NotImplementedError()

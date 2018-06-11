@@ -1,19 +1,10 @@
 [PENDING]
-1.  Something funny is going on with the weights when we are learning a
-    specific task. Plot a histogram of the weights and see how they are
-    distributed at different points in learning. This has direct implications
-    to how well multiple environments can be learnt.
+1.  Need different learning rates for actor and critic.
 
-2.  In case of multiple environments with very few steps allowed in each
-    environment in a given alternation, critic learns different value functions
-    pretty easily. However, the actor is not able to learn the correct weights to
-    make a differentiation in actions for the two different environments.
+2.  Adding walls to the maze: debugging needed.
 
-3.  Sometimes, the values encoded by the critic also blow up dramatically.
-    What is going on here. It just occured to me that value iteration does
-    take a lot longer to converge than policy iteration. And policy iteration
-    does give you the correct 'behavior'. Stopping well before values
-    saturate is certainly a good idea in this case.
+3.  Visualization: Separately plot the goal location. Also add functionality
+    to plot the walls for the new environments.
 
 4.  Y coordinate of the goal location is off-by-one. Need to check!
 
@@ -28,3 +19,13 @@
 3.  Plot the trajectories with the same x-y limits to make it easier to
     visualize the trajectories. Also add markers for the start and end
     points.
+
+4.  Something funny is going on with the weights when we are learning a
+    specific task. Plot a histogram of the weights and see how they are
+    distributed at different points in learning. This has direct implications
+    to how well multiple environments can be learnt.
+
+5.  In case of multiple environments with very few steps allowed in each
+    environment in a given alternation, critic learns different value functions
+    pretty easily. However, the actor is not able to learn the correct weights to
+    make a differentiation in actions for the two different environments.
