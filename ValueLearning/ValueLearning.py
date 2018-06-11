@@ -39,7 +39,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
     n_steps  = np.zeros(n_trials, dtype=int)
     for trial in range(n_trials):
         # Path is visualized using a graphics object
-        canvas = Graphics.MazeCanvas(environment)
+        canvas = Graphics.WallMazeCanvas(environment)
 
         environment.redrawInitLocation()
         initial_state = environment.getCurrentState()

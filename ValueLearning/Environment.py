@@ -198,6 +198,11 @@ class Wall(object):
         # be useful in determining if a step being taken by an agent is legal.
         return False
 
+    def getPlottingData(self):
+        # Return the x and y coordinates of the end points separately (more
+        # convenient for plotting)
+        return (self._start[0], self._end[0]), (self._start[1], self._end[1])
+
 class MazeWithWalls(Maze):
     """
     A Maze with obstacles in the path. The open maze task is too simple to
@@ -213,6 +218,10 @@ class MazeWithWalls(Maze):
         self._walls = list(walls)
         self.setup()
         return
+
+    def getWalls(self):
+        # Get the list of walls (needed for plotting)
+        return self._walls
 
     def addWall(self, wall):
         self._walls.append(wall)

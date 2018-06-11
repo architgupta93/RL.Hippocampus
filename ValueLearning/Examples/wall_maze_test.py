@@ -37,7 +37,7 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     # Create a initial and goal location including the information about wall locations
 
     # Object for plotting and visualization
-    canvas = Graphics.MazeCanvas(maze)
+    canvas = Graphics.WallMazeCanvas(maze)
 
     # Add Place fields and place cells
     n_fields = round(1.0 * nx * ny)

@@ -95,6 +95,30 @@ class MazeCanvas(object):
 
         # TODO: On top of this plot, we should add the place field locations
 
+class WallMazeCanvas(MazeCanvas):
+    """
+    Class extending the functionality of the basic canvas class. This can
+    plot additional features like obstacles in the Maze.
+    """
+
+    def __init__(self, maze):
+        super(WallMazeCanvas, self).__init__(maze)
+        self._maze = maze
+        return
+
+    def plotTrajectory(self):
+        """
+        Plots the Maze's structure and overlays the agent's trajectory on it.
+        """
+        fig = self._anim_obj.getContainer()
+
+        for wall in self._maze.getWalls():
+            [xs, ys] = wall.getPlottingData()
+            fig.plot(xs, ys)
+
+        self._anim_obj.setLims((self._min_x-1, self._max_x), (self._min_y-1, self._max_y))
+        self._anim_obj.plotStaticTR(object_type='line', figure_handle=fig)
+
 def plot(*args):
     # Create a new figure
     new_figure = plt.figure()
