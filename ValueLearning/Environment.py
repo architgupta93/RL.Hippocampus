@@ -26,6 +26,7 @@ class Maze(object):
 
         # Distance from the goal at which you are declared to have reached it
         self._goal_th  = 0.2
+        self._fig_num  = -1
 
     def getBounds(self):
         return(0, 0, self._nx, self._ny)
@@ -44,9 +45,6 @@ class Maze(object):
 
     def getActions(self):
         return list(self._action_map.keys())
-
-    def getLegalActions(self, state):
-        raise NotImplementedError
 
     def convertActionToTranslation(self, action):
         if action in self._action_map:
@@ -148,6 +146,10 @@ class Maze(object):
 
         return
 
+    def setup(self):
+        self.redrawInitLocation()
+        self.redrawGoalLocation()
+
     # Abstract functions to be implemented by child classes
     def _getValidLocation(self):
         raise NotImplementedError()
@@ -159,8 +161,7 @@ class RandomGoalOpenField(Maze):
     def __init__(self, nx, ny):
         # Call the parent class constructor
         super(RandomGoalOpenField, self).__init__(nx, ny)
-        self.redrawGoalLocation()
-        self.redrawInitLocation()
+        self.setup()
         return
 
     def _getValidLocation(self):
@@ -190,12 +191,12 @@ class Wall(object):
 
     def includesPoint(self, pt):
         # Check if the wall segment includes the specified point
-        return True
+        return False
 
     def crosses(self, other_wall):
         # Check if this wall segment crosses the segment 'other_wall'. This can
         # be useful in determining if a step being taken by an agent is legal.
-        return True
+        return False
 
 class MazeWithWalls(Maze):
     """
@@ -204,12 +205,14 @@ class MazeWithWalls(Maze):
     debugging was becoming increasingly difficult. Having a more difficult
     task would be a better way to assess what is going on.
     """
-    def __init__(self, nx, ny):
+    def __init__(self, nx, ny, walls=[]):
         # Class constructor
         super(MazeWithWalls, self).__init__(nx, ny)
 
         # Initialize a empty list of walls. Walls can be added later
-        self._walls = list()
+        self._walls = list(walls)
+        self.setup()
+        return
 
     def addWall(self, wall):
         self._walls.append(wall)
@@ -226,10 +229,12 @@ class MazeWithWalls(Maze):
             is_invalid = False
             location = (np.random.randint(0, self._nx), np.random.randint(0,self._ny))
             for wall in self._walls:
-                if wall.includesPoint(goal_location):
+                if wall.includesPoint(location):
                     is_invalid = True
                     break
         return location
-
-    def getLegalActions(self):
-        raise NotImplementedError()
+    
+    def reachedGoalState(self):
+        # There is just ONE goal location, nothing complicated here
+        goal_location = self._goal_locations[0]
+        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] == goal_location[1], 2) < pow(self._goal_th, 2)))
