@@ -106,3 +106,6 @@ ENV/
 # Presentations, pictures - Go Libreoffice
 *.odp*
 *.png
+
+# Visual Studio Files
+*settings.json
