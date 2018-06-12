@@ -79,9 +79,11 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
             # corresponding value functions are shown. At higher debug levels,
             # the entire trajectory is shown for every iteration
             if (DBG_LVL > 1) or (trial == 0) or (trial == n_trials-1):
+                # Plot the trajectory taken for this trial
                 canvas.plotTrajectory()
+
                 # This takes extremely long when using a population of neurons
-                # canvas.plotValueFunction(place_cells, critic)
+                canvas.plotValueFunction(place_cells, critic)
         
                 # Plot a histogram of the weightS
                 """

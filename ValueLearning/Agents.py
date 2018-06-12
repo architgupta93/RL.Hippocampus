@@ -135,7 +135,7 @@ class Critic(Agent):
 
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
-        self.INITIAL_WEIGHT_VAR = 0.0
+        self.INITIAL_WEIGHT_VAR = 0.0001
         self._learning_rate   = 0.02
         self._discount_factor = 1.00
 

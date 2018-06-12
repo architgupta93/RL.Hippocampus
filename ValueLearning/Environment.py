@@ -11,7 +11,7 @@ class Maze(object):
 
     # There can be a reward(s) associated with both the goal and non-goal states.
     GOAL_STATE_REWARD = 1
-    NON_GOAL_STATE_REWARD = 0
+    NON_GOAL_STATE_REWARD = -0.0001
 
     def __init__(self, nx, ny):
         self._nx = nx
