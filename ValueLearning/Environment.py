@@ -180,7 +180,7 @@ class Wall(object):
 
     # The walls are not 1D lines, they have some thickness. This is modelled by
     # a single number which is half of the thickness of the wall.
-    _WALL_THICKNESSS = 0.1
+    _WALL_THICKNESSS = 0.5
 
     def __init__(self, start, end):
         # Class constructor: Takes the two end points of the wall (start and
@@ -202,15 +202,14 @@ class Wall(object):
 
         return ((self._start[0] < pt[0] < self._end[0]) and (abs(self._start[1] - pt[1]) < self._WALL_THICKNESSS))
 
-    def crosses(self, other_wall):
+    def crosses(self, pt1, pt2):
         # Check if this wall segment crosses the segment 'other_wall'. This can
         # be useful in determining if a step being taken by an agent is legal.
 
-        ox, oy = other_wall.getPlottingData()
         if self._is_vert:
-            return (ox[0] < self._start[0] < ox[1]) or (ox[1] < self._start[0] < ox[0])
+            return (pt1[0] < self._start[0] < pt2[0]) or (pt2[0] < self._start[0] < pt1[0])
 
-        return (oy[0] < self._start[0] < oy[1]) or (oy[1] < self._start[1] < oy[0])
+        return (pt1[1] < self._start[0] < pt2[1]) or (pt2[1] < self._start[1] < pt1[1])
 
     def getPlottingData(self):
         # Return the x and y coordinates of the end points separately (more
@@ -230,6 +229,13 @@ class MazeWithWalls(Maze):
 
         # Initialize a empty list of walls. Walls can be added later
         self._walls = list(walls)
+
+        # Add walls corresponding to boundaries
+        l_wall = Wall((0,0), (0,ny))    # Left
+        r_wall = Wall((nx,0), (nx,ny))  # Right
+        b_wall = Wall((0,0), (nx,0))    # Bottom
+        t_wall = Wall((0,ny), (nx,ny))  # Top
+        self._walls.extend([l_wall, r_wall, b_wall, t_wall])
         self.setup()
         return
 
