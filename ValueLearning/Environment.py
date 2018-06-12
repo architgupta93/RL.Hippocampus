@@ -55,6 +55,7 @@ class Maze(object):
         # means that if we are right next to one of the boundaries, no movement
         # with happen! Correcting for these boundary cases:
 
+        # TODO: This code is possibly wrong (Needs to be fixed)
         # Left X boundary
         if self._state[0] == 0:
             if translation[0] < 0:
@@ -245,6 +246,17 @@ class MazeWithWalls(Maze):
 
     def addWall(self, wall):
         self._walls.append(wall)
+
+    def convertActionToTranslation(self, action):
+        if action in self._action_map:
+            translation = self._action_map[action]
+        no_movement = (0, 0)
+        next_naive_state = (self._state[0] + translation[0], self._state[1] + translation[1])
+        for wall in self._walls:
+            if wall.crosses(self._state, next_naive_state):
+                return no_movement
+
+        return translation
 
     def _getValidLocation(self):
         # Get a location that is not coincident with any of the walls in the
