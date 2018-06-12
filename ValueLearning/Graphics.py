@@ -54,11 +54,9 @@ class MazeCanvas(object):
         self._anim_obj.update(self._t_stamp, next_state[0], next_state[1])
         self._t_stamp += 1
 
-    def plotTrajectory(self):
-        # The -1 is just because of the way range() works. Start is included
-        # but end is not. This cuts out the first row and first column of data
-        self._anim_obj.setLims((self._min_x-1, self._max_x), (self._min_y-1, self._max_y))
-        self._anim_obj.plotStaticTR(object_type='line')
+    def plotTrajectory(self, fig=None):
+        self._anim_obj.setLims((self._min_x, self._max_x), (self._min_y, self._max_y))
+        self._anim_obj.plotStaticTR(object_type='line', figure_handle=fig)
     
     def animateTrajectory(self):
         self._anim_obj.plotTimedTR(object_type='point')
@@ -112,12 +110,16 @@ class WallMazeCanvas(MazeCanvas):
         """
         fig = self._anim_obj.getContainer()
 
-        for wall in self._maze.getWalls():
+        for idx, wall in enumerate(self._maze.getWalls()):
             [xs, ys] = wall.getPlottingData()
-            fig.plot(xs, ys)
+            if idx < 4:
+                # These should be the boundaries - Drawn blue
+                fig.plot(xs, ys, 'b')
+            else:
+                # All obstructions (user designed) - Drawn green
+                fig.plot(xs, ys, 'g')
 
-        self._anim_obj.setLims((self._min_x-1, self._max_x), (self._min_y-1, self._max_y))
-        self._anim_obj.plotStaticTR(object_type='line', figure_handle=fig)
+        super().plotTrajectory(fig)
 
 def plot(*args):
     # Create a new figure

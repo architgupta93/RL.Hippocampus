@@ -25,7 +25,7 @@ class Maze(object):
         self._init_locations = []
 
         # Distance from the goal at which you are declared to have reached it
-        self._goal_th  = 0.2
+        self._goal_th  = 0.5
         self._fig_num  = -1
 
     def getBounds(self):
@@ -172,7 +172,7 @@ class RandomGoalOpenField(Maze):
     def reachedGoalState(self):
         # There is just ONE goal location, nothing complicated here
         goal_location = self._goal_locations[0]
-        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] == goal_location[1], 2) < pow(self._goal_th, 2)))
+        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
 
 class Wall(object):
     """
@@ -228,15 +228,16 @@ class MazeWithWalls(Maze):
         # Class constructor
         super(MazeWithWalls, self).__init__(nx, ny)
 
-        # Initialize a empty list of walls. Walls can be added later
-        self._walls = list(walls)
-
         # Add walls corresponding to boundaries
         l_wall = Wall((0,0), (0,ny))    # Left
         r_wall = Wall((nx,0), (nx,ny))  # Right
         b_wall = Wall((0,0), (nx,0))    # Bottom
         t_wall = Wall((0,ny), (nx,ny))  # Top
-        self._walls.extend([l_wall, r_wall, b_wall, t_wall])
+        self._walls = list([l_wall, r_wall, b_wall, t_wall])
+
+        # Add the user supplied walls
+        self._walls.extend(walls)
+
         self.setup()
         return
 
@@ -278,4 +279,4 @@ class MazeWithWalls(Maze):
     def reachedGoalState(self):
         # There is just ONE goal location, nothing complicated here
         goal_location = self._goal_locations[0]
-        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] == goal_location[1], 2) < pow(self._goal_th, 2)))
+        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
