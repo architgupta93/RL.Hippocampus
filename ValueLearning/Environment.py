@@ -179,9 +179,8 @@ class Wall(object):
     """
 
     # The walls are not 1D lines, they have some thickness. This is modelled by
-    # checking the angle of a point with the two ends and if it lies in a
-    # certain range, the point is declared to be within the line.
-    _INCLUSION_RATIO = 0.1
+    # a single number which is half of the thickness of the wall.
+    _WALL_THICKNESSS = 0.1
 
     def __init__(self, start, end):
         # Class constructor: Takes the two end points of the wall (start and
@@ -189,14 +188,29 @@ class Wall(object):
         self._start = start
         self._end   = end
 
+        # For the sake of simplicity, we are allowing only vertical and
+        # horizontal walls. This makes detecting collisions (illegal actions) a
+        # lot easier.
+        self._is_vert = (self._start[0] == self._end[0])
+        if (self._start[0] != self._end[0]) and (self._start[1] != self._end[1]):
+            ValueError('Wall is neither vertical not horizontal. Aborting!')
+
     def includesPoint(self, pt):
         # Check if the wall segment includes the specified point
-        return False
+        if self._is_vert:
+            return ((self._start[1] < pt[1] < self._end[1]) and (abs(self._start[0] - pt[0]) < self._WALL_THICKNESSS))
+
+        return ((self._start[0] < pt[0] < self._end[0]) and (abs(self._start[1] - pt[1]) < self._WALL_THICKNESSS))
 
     def crosses(self, other_wall):
         # Check if this wall segment crosses the segment 'other_wall'. This can
         # be useful in determining if a step being taken by an agent is legal.
-        return False
+
+        ox, oy = other_wall.getPlottingData()
+        if self._is_vert:
+            return (ox[0] < self._start[0] < ox[1]) or (ox[1] < self._start[0] < ox[0])
+
+        return (oy[0] < self._start[0] < oy[1]) or (oy[1] < self._start[1] < oy[0])
 
     def getPlottingData(self):
         # Return the x and y coordinates of the end points separately (more
