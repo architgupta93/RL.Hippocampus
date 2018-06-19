@@ -7,7 +7,7 @@ class Agent(object):
     The output of the agent is a weighted sum of the input activity
     """
 
-    INITIAL_WEIGHT_VAR = 0.00
+    INITIAL_WEIGHT_VAR = 0.00001
 
     def __init__(self, n_fields):
         # Learning parameters
@@ -60,7 +60,7 @@ class Actor(Agent):
         # UPDATE: The action that was previously chosen (say E) gets a bump in
         # its probability mimicking a 'momentum' term. It just captures the
         # fact that animals probably like to keep going in one direction.
-        self._momentum_factor = 10.0
+        self._momentum_factor = 2.0
     
     def getAction(self, activity):
         # Experimenting with other monotonic functions

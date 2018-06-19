@@ -117,11 +117,11 @@ class WallMazeCanvas(MazeCanvas):
         for idx, wall in enumerate(self._maze.getWalls()):
             [xs, ys] = wall.getPlottingData()
             if idx < 4:
-                # These should be the boundaries - Drawn blue
-                fig.plot(xs, ys, 'b')
-            else:
-                # All obstructions (user designed) - Drawn green
+                # These should be the boundaries - Drawn green
                 fig.plot(xs, ys, 'g')
+            else:
+                # All obstructions (user designed) - Drawn blue
+                fig.plot(xs, ys, 'b')
 
         super().plotTrajectory(fig)
 

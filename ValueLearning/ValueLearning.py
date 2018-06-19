@@ -51,7 +51,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
             n_steps[trial] += 1
             current_state = environment.getCurrentState()
             if DBG_LVL > 1:
-                print('On state: (%d, %d)' % (current_state[0], current_state[1]))
+                print('On state: (%.2f, %.2f)' % (current_state[0], current_state[1]))
 
             # Get the place field activity based on the current location
             pf_activity = [pf.getActivity(current_state) for pf in place_cells]
