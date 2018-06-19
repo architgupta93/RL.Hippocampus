@@ -55,12 +55,12 @@ class Actor(Agent):
         # previous activities. Previous activity is scaled down by a scalar
         # factor which is also a part of the class now.
         self._previous_activity = None
-        self._memory_factor = 0.5
+        self._memory_factor = 0.0
 
         # UPDATE: The action that was previously chosen (say E) gets a bump in
         # its probability mimicking a 'momentum' term. It just captures the
         # fact that animals probably like to keep going in one direction.
-        self._momentum_factor = 1.01
+        self._momentum_factor = 100.0
     
     def getAction(self, activity):
         # Experimenting with other monotonic functions
@@ -69,9 +69,11 @@ class Actor(Agent):
 
         # Method: 01
         # Include the memory effect
+        """
         if self._previous_activity is not None:
             scaled_activity += self._memory_factor * self._previous_activity
         self._previous_activity = scaled_activity
+        """
 
         # Method: 02
         # Go by the behavior and give more weight to the last selected action
@@ -137,7 +139,7 @@ class Critic(Agent):
         # which weights are scaled for the critic
         self.INITIAL_WEIGHT_VAR = 0.0001
         self._learning_rate   = 0.02
-        self._discount_factor = 1.00
+        self._discount_factor = 0.99
 
         # Weights to map place field activities to value
         self._weights  = self.INITIAL_WEIGHT_VAR * np.random.randn(self._n_fields)

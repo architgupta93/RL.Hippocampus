@@ -8,6 +8,9 @@
 
 4.  Y coordinate of the goal location is off-by-one. Need to check!
 
+5.  If a trial ends in 0 iterations (Agent starts very close to the goal
+    location), the value function is not updated at all. This needs to be fixed.
+
 [DONE]
 1.  Start with random initial values for the critic instead of starting with
     all zeros.

@@ -110,6 +110,10 @@ class WallMazeCanvas(MazeCanvas):
         """
         fig = self._anim_obj.getContainer()
 
+        # Show the goal location
+        goal_loc = self._maze.getGoalLocation()
+        fig.plot(goal_loc[0], goal_loc[1], '-*', 'r')
+
         for idx, wall in enumerate(self._maze.getWalls()):
             [xs, ys] = wall.getPlottingData()
             if idx < 4:

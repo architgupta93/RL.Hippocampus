@@ -147,9 +147,12 @@ class Maze(object):
 
         return
 
+    def getGoalLocation(self):
+        return self._goal_locations[0]
+
     def setup(self):
-        self.redrawInitLocation()
         self.redrawGoalLocation()
+        self.redrawInitLocation()
 
     # Abstract functions to be implemented by child classes
     def _getValidLocation(self):
