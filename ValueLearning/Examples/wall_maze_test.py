@@ -46,7 +46,7 @@ def testMaze(nT, nN, learning_dbg_lvl=2, navigation_dbg_lvl=0):
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields)
     place_cells  = Hippocampus.assignPlaceCells(n_cells, place_fields)
 
-    if (learning_dbg_lvl > 1):
+    if (learning_dbg_lvl > 2):
         canvas.visualizePlaceFields(place_cells)
 
     # Learn how to navigate this Environment

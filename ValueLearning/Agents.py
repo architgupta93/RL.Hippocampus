@@ -60,7 +60,7 @@ class Actor(Agent):
         # UPDATE: The action that was previously chosen (say E) gets a bump in
         # its probability mimicking a 'momentum' term. It just captures the
         # fact that animals probably like to keep going in one direction.
-        self._momentum_factor = 100.0
+        self._momentum_factor = 10.0
     
     def getAction(self, activity):
         # Experimenting with other monotonic functions
@@ -75,12 +75,14 @@ class Actor(Agent):
         self._previous_activity = scaled_activity
         """
 
-        # Method: 02
+        action_weights  = np.exp(scaled_activity)
+
+        # Method: 02 - This should happen after the numbers have been converted
+        # to probabilities (otherwise negative numbers become even more
+        # negative and therefore less likely)
         # Go by the behavior and give more weight to the last selected action
         if self._last_selected_action is not None:
-            scaled_activity[self._last_selected_action] *= self._momentum_factor
-
-        action_weights  = np.exp(scaled_activity)
+            action_weights[self._last_selected_action] *= self._momentum_factor
 
         # Return the maximally weighted action
         # selected_action = np.argmax(action_weights)
