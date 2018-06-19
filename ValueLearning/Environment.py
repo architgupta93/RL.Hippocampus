@@ -209,11 +209,20 @@ class Wall(object):
     def crosses(self, pt1, pt2):
         # Check if this wall segment crosses the segment 'other_wall'. This can
         # be useful in determining if a step being taken by an agent is legal.
+        # UPDATE (2018/06/19): Taking into account that we are dealing with WALL SEGMENTS and not infinite walls
 
         if self._is_vert:
-            return (pt1[0] < self._start[0] < pt2[0]) or (pt2[0] < self._start[0] < pt1[0])
+            if (pt1[0] < self._start[0] < pt2[0]) or (pt2[0] < self._start[0] < pt1[0]):
+                # Check that the intersection lies within the wall segment
+                return ((self._start[1] < pt1[1] < self._end[1]) or (self._start[1] > pt1[1] > self._end[1])) and \
+                ((self._start[1] < pt1[1] < self._end[1]) or (self._start[1] > pt1[1] > self._end[1]))
+            else:
+                return False
 
-        return (pt1[1] < self._start[0] < pt2[1]) or (pt2[1] < self._start[1] < pt1[1])
+        if (pt1[1] < self._start[1] < pt2[1]) or (pt2[1] < self._start[1] < pt1[1]):
+            return ((self._start[0] < pt1[0] < self._end[0]) or (self._start[0] > pt1[0] > self._end[0])) and \
+            ((self._start[0] < pt1[0] < self._end[0]) or (self._start[0] > pt1[0] > self._end[0]))
+        return False
 
     def getPlottingData(self):
         # Return the x and y coordinates of the end points separately (more
