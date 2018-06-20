@@ -9,7 +9,7 @@ import threading
 import numpy as np
 import matplotlib.pylab as pl
 
-def testMaze(nT, nN, learning_dbg_lvl=2, navigation_dbg_lvl=0):
+def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     ValueLearning.DBG_LVL = learning_dbg_lvl
 
     # Parameters describing the maze

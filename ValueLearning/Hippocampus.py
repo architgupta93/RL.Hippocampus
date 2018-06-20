@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-N_CELLS_PER_FIELD = 100
+N_CELLS_PER_FIELD = 1
 
 def assignPlaceCells(n_cells, place_fields):
     """
@@ -35,15 +35,11 @@ def setupPlaceFields(maze, n_place_fields):
     states   = maze.getStates()
     n_states = len(states)
 
-    # Place fields cover 20% of the maze on an average
-    mean_pf_size   = np.sqrt(n_states) * 0.20
-    pf_variability = 1.0
-
     # Select n_place_fields among these to the centers of the place fields
     pf_centers = random.sample(states, n_place_fields)
 
-    # Place fields cover 10% of the maze on an average
-    pf_sizes   = np.sqrt(n_states) * 0.10 * np.ones(n_states, dtype=float)
+    # Place fields cover 5% of the maze on an average
+    pf_sizes   = np.sqrt(n_states) * 0.05 * np.ones(n_states, dtype=float)
 
     # Create and return the place fields
     pfs = []

@@ -27,7 +27,8 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
 
     # Set up the actor and critic based on the place fields
     if actor is None:
-        actor = Agents.Actor(environment.getActions(), len(place_cells)) 
+        # actor = Agents.Actor(environment.getActions(), len(place_cells)) 
+        actor = Agents.RandomAgent(environment.getActions(), len(place_cells)) 
     else:
         assert(actor.getNFields() == len(place_cells))
 

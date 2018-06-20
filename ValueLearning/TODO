@@ -1,7 +1,9 @@
 [PENDING]
 1.  Need different learning rates for actor and critic.
 
-2.  Adding walls to the maze: debugging needed.
+2.  Adding walls to the maze: debugging needed (Only for edge cases - Probably
+    when you start on one of the walls - still need to debug the wall's
+    'includes' function)
 
 3.  Visualization: Separately plot the goal location. Also add functionality
     to plot the walls for the new environments.

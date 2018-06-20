@@ -10,14 +10,14 @@ class Maze(object):
     """
 
     # There can be a reward(s) associated with both the goal and non-goal states.
-    GOAL_STATE_REWARD = 1
+    GOAL_STATE_REWARD = 0.05
     NON_GOAL_STATE_REWARD = -0.0001
 
     def __init__(self, nx, ny):
         self._nx = nx
         self._ny = ny
         self._state = [0, 0]
-        self._action_map = {'E':(-0.1, 0), 'W':(0.1,0), 'N':(0,0.1), 'S':(0,-0.1)}
+        self._action_map = {'E':(-0.2, 0), 'W':(0.2,0), 'N':(0,0.2), 'S':(0,-0.2)}
         self._n_states = self._nx * self._ny
     
         # Placeholders for the goal location(s) and initial location(s)
@@ -125,6 +125,9 @@ class Maze(object):
         plt.scatter(gx, gy, c='green', marker='o', alpha=0.5)
 
         plt.show()
+
+    def getWalls(self):
+        return []
 
     def redrawInitLocation(self):
         # Single, random start location inside the maze
