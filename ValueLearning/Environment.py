@@ -18,7 +18,7 @@ class Maze(object):
         self._ny = ny
         self._state = [0, 0]
         self._action_map = {'E':(-0.2, 0), 'W':(0.2,0), 'N':(0,0.2), 'S':(0,-0.2)}
-        self._n_states = self._nx * self._ny
+        self._n_states = (1+self._nx) * (1+self._ny)
     
         # Placeholders for the goal location(s) and initial location(s)
         self._goal_locations = []
@@ -37,8 +37,8 @@ class Maze(object):
         """
 
         all_states = []
-        for px in range(self._nx):
-            for py in range(self._ny):
+        for px in range(-1,self._nx+1):
+            for py in range(-1,self._ny+1):
                 all_states.append((px, py))
         
         return all_states

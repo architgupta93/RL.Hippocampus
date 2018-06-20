@@ -29,8 +29,8 @@ class MazeCanvas(object):
         Show place cell activity for all the positions on the maze
         """
 
-        x_locs = np.linspace(self._min_x, self._max_x-1, 100)
-        y_locs = np.linspace(self._min_y, self._max_y-1, 100)
+        x_locs = np.linspace(self._min_x, self._max_x, 100)
+        y_locs = np.linspace(self._min_y, self._max_y, 100)
         activity = np.zeros((len(x_locs), len(y_locs)), dtype=float)
         for xi, px in enumerate(x_locs):
             for yj, py in enumerate(y_locs):
