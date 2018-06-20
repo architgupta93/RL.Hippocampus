@@ -18,7 +18,7 @@ class Maze(object):
         self._ny = ny
         self._state = [0, 0]
         self._action_map = {'E':(-0.2, 0), 'W':(0.2,0), 'N':(0,0.2), 'S':(0,-0.2)}
-        self._n_states = (1+self._nx) * (1+self._ny)
+        self._n_states = (2+self._nx) * (2+self._ny)
     
         # Placeholders for the goal location(s) and initial location(s)
         self._goal_locations = []
@@ -37,8 +37,8 @@ class Maze(object):
         """
 
         all_states = []
-        for px in range(-1,self._nx+1):
-            for py in range(-1,self._ny+1):
+        for px in range(-1,self._nx+2):
+            for py in range(-1,self._ny+2):
                 all_states.append((px, py))
         
         return all_states
@@ -57,24 +57,20 @@ class Maze(object):
 
         # TODO: This code is possibly wrong (Needs to be fixed)
         # Left X boundary
-        if self._state[0] == 0:
-            if translation[0] < 0:
-                return no_movement
+        if self._state[0] + translation[0] <= 0:
+            return no_movement
 
         # Right X boundary
-        if self._state[0] == self._nx-1:
-            if translation[0] > 0:
-                return no_movement
+        if self._state[0] + translation[0] >= self._nx:
+            return no_movement
         
         # Bottom Y boundary
-        if self._state[1] == 0:
-            if translation[1] < 0:
-                return no_movement
+        if self._state[1] + translation[1] <= 0:
+            return no_movement
 
         # Top Y boundary
-        if self._state[1] == self._ny-1:
-            if translation[1] > 0:
-                return no_movement
+        if self._state[1] + translation[1] >= self._ny:
+            return no_movement
 
         # TODO: Can we run into a never ending loop because of this?
         return translation

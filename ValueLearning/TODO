@@ -1,17 +1,13 @@
 [PENDING]
-1.  Need different learning rates for actor and critic.
 
 2.  Adding walls to the maze: debugging needed (Only for edge cases - Probably
     when you start on one of the walls - still need to debug the wall's
     'includes' function)
 
-3.  Visualization: Separately plot the goal location. Also add functionality
-    to plot the walls for the new environments.
-
 4.  Y coordinate of the goal location is off-by-one. Need to check!
 
-5.  If a trial ends in 0 iterations (Agent starts very close to the goal
-    location), the value function is not updated at all. This needs to be fixed.
+6.  Instead of reporting the steps taken, report the deviation from the
+    optimal number of steps needed to get to the target location.
 
 [DONE]
 1.  Start with random initial values for the critic instead of starting with
@@ -34,3 +30,8 @@
     environment in a given alternation, critic learns different value functions
     pretty easily. However, the actor is not able to learn the correct weights to
     make a differentiation in actions for the two different environments.
+
+6.  Need different learning rates for actor and critic.
+
+7.  Visualization: Separately plot the goal location. Also add functionality
+    to plot the walls for the new environments.

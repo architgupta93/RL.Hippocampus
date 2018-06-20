@@ -9,7 +9,7 @@ import threading
 import numpy as np
 import matplotlib.pyplot as pl
 
-def testMaze(nT, nN, learning_dbg_lvl=2, navigation_dbg_lvl=0):
+def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     ValueLearning.DBG_LVL = learning_dbg_lvl
     # Create a Maze for the experiment
     nx = 10
@@ -17,7 +17,7 @@ def testMaze(nT, nN, learning_dbg_lvl=2, navigation_dbg_lvl=0):
 
     # Every location has an associated place field
     # TODO: Play around with having more/fewer place fields!
-    n_fields = round(1.0 * (nx+2) * (ny+2))
+    n_fields = round(1.0 * (nx+3) * (ny+3))
 
     # Instead of having multiple cells per field, here we can get away with
     # having fewer place fields than the number of locations on the map (which
