@@ -128,7 +128,6 @@ class RandomAgent(Actor):
     def getAction(self, pf_activity):
         return random.sample(self._actions, 1)[0]
 
-
 class Critic(Agent):
     def __init__(self, n_fields):
         """
@@ -178,3 +177,40 @@ class IdealValueFunction(Critic):
 
     def __init__(self, n_fields):
         super(IdealValueFunction, self).__init__(n_fields)
+
+class IdealActor(Agent):
+    """
+    Instead of maintaining its own set of weights, this actor accesses the
+    weights of the critic and chooses the optimal action based on the current
+    value function.
+    """
+    def __init__(self, environment, critic, place_cells):
+        super(IdealActor, self).__init__(len(place_cells))
+        self._actions = environment.getActions()
+        self._n_actions = len(self._actions)
+        # This has a copy of the environment and place cells, which it can use
+        # to simulate future actions and use that to make the optimal choices
+        # (based on the stored critic's value function)
+
+        # NOTE: Keep in mind that such an actor is quite unrealistic and is
+        # only being used to test the critic independent of the actor.
+
+        self._c_environment = environment
+        self._c_critic = critic
+        self._c_place_cells = place_cells
+
+    def getAction(self, activity):
+        # Ignore the activity, use the environment to get the current location
+        current_location = self._c_environment.getCurrentState()
+        target_values    = np.zeros(self._n_actions,)
+        for idx, action in enumerate(self._actions):
+            translation = self._c_environment.convertActionToTranslation(action)
+            next_location = (current_location[0] + translation[0], current_location[1] + translation[1])
+            target_values[idx] = self._c_critic.getValue([pc.getActivity(next_location) for pc in self._c_place_cells])
+
+        optimal_action = np.argmax(target_values)
+        return self._actions[optimal_action]
+
+    def updateWeights(self, activity, prediction_error):
+        # NOTE: Function is here only for completeness. Does nothing!
+        return
