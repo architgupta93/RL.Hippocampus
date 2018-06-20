@@ -12,12 +12,13 @@ class Maze(object):
     # There can be a reward(s) associated with both the goal and non-goal states.
     GOAL_STATE_REWARD = 0.05
     NON_GOAL_STATE_REWARD = -0.0001
+    MOVE_DISTANCE = 0.2
 
     def __init__(self, nx, ny):
         self._nx = nx
         self._ny = ny
         self._state = [0, 0]
-        self._action_map = {'E':(-0.2, 0), 'W':(0.2,0), 'N':(0,0.2), 'S':(0,-0.2)}
+        self._action_map = {'E':(-self.MOVE_DISTANCE, 0), 'W':(self.MOVE_DISTANCE,0), 'N':(0,self.MOVE_DISTANCE), 'S':(0,-self.MOVE_DISTANCE)}
         self._n_states = (2+self._nx) * (2+self._ny)
     
         # Placeholders for the goal location(s) and initial location(s)
@@ -158,7 +159,10 @@ class Maze(object):
         raise NotImplementedError()
 
     def reachedGoalState(self):
-        raise NotImplementedError
+        raise NotImplementedError()
+
+    def getOptimalStepsToGoal(self):
+        raise NotImplementedError()
 
 class RandomGoalOpenField(Maze):
     def __init__(self, nx, ny):
@@ -175,6 +179,11 @@ class RandomGoalOpenField(Maze):
         # There is just ONE goal location, nothing complicated here
         goal_location = self._goal_locations[0]
         return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
+
+    def getOptimalStepsToGoal(self):
+        goal_location = self._goal_locations[0]
+        init_location = self._init_locations[0]
+        return np.round((abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))/self.MOVE_DISTANCE)
 
 class Wall(object):
     """

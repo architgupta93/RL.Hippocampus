@@ -33,8 +33,8 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
 
     if actor is None:
         # actor = Agents.Actor(environment.getActions(), len(place_cells)) 
-        # actor = Agents.RandomAgent(environment.getActions(), len(place_cells)) 
-        actor = Agents.IdealActor(environment, critic, place_cells)
+        actor = Agents.RandomAgent(environment.getActions(), len(place_cells)) 
+        # actor = Agents.IdealActor(environment, critic, place_cells)
     else:
         assert(actor.getNFields() == len(place_cells))
 
@@ -43,7 +43,12 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
         # Path is visualized using a graphics object
         canvas = Graphics.WallMazeCanvas(environment)
 
+        # Initialize a new location and adjust for the optimal number of steps
+        # needed to get to the goal.
         environment.redrawInitLocation()
+        optimal_steps_to_goal = environment.getOptimalStepsToGoal()
+        n_steps[trial] = -optimal_steps_to_goal
+
         initial_state = environment.getCurrentState()
         canvas.update(initial_state)
         while not environment.reachedGoalState():
@@ -92,7 +97,6 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
                 critic_weights = np.reshape(critic.getWeights(), -1)
                 Graphics.histogram(critic_weights)
                 """
-
 
     if (DBG_LVL > 0):
         Graphics.plot(n_steps)

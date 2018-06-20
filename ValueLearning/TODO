@@ -6,9 +6,6 @@
 
 4.  Y coordinate of the goal location is off-by-one. Need to check!
 
-6.  Instead of reporting the steps taken, report the deviation from the
-    optimal number of steps needed to get to the target location.
-
 [DONE]
 1.  Start with random initial values for the critic instead of starting with
     all zeros.
@@ -35,3 +32,6 @@
 
 7.  Visualization: Separately plot the goal location. Also add functionality
     to plot the walls for the new environments.
+
+8.  Instead of reporting the steps taken, report the deviation from the
+    optimal number of steps needed to get to the target location.
