@@ -112,7 +112,7 @@ class WallMazeCanvas(MazeCanvas):
 
         # Show the goal location
         goal_loc = self._maze.getGoalLocation()
-        fig.plot(goal_loc[0], goal_loc[1], '-*', 'r')
+        fig.plot(goal_loc[0], goal_loc[1], 'g-s')
 
         for idx, wall in enumerate(self._maze.getWalls()):
             [xs, ys] = wall.getPlottingData()
