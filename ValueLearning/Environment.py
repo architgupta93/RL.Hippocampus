@@ -173,7 +173,7 @@ class RandomGoalOpenField(Maze):
 
     def _getValidLocation(self):
         # Return any point at random from the field
-        return (np.random.randint(0, self._nx), np.random.randint(0,self._ny))
+        return (np.random.randint(1, self._nx), np.random.randint(1,self._ny))
     
     def reachedGoalState(self):
         # There is just ONE goal location, nothing complicated here
@@ -289,7 +289,7 @@ class MazeWithWalls(Maze):
         while (is_invalid):
             # Have a single, random goal location inside the maze
             is_invalid = False
-            location = (np.random.randint(0, self._nx), np.random.randint(0,self._ny))
+            location = (np.random.randint(1, self._nx), np.random.randint(1,self._ny))
             for wall in self._walls:
                 if wall.includesPoint(location):
                     is_invalid = True
