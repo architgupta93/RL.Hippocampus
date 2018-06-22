@@ -15,11 +15,17 @@ class Maze(object):
     MOVE_DISTANCE = 1.0
 
     def __init__(self, nx, ny):
+        # Macro-states for Place field positioning
         self._nx = nx
         self._ny = ny
+        self._n_states = (2+self._nx) * (2+self._ny)
+
+        # Micro-states for traversal
+        self._ux = round(nx/self.MOVE_DISTANCE)
+        self._uy = round(ny/self.MOVE_DISTANCE)
+
         self._state = [0, 0]
         self._action_map = {'E':(-self.MOVE_DISTANCE, 0), 'W':(self.MOVE_DISTANCE,0), 'N':(0,self.MOVE_DISTANCE), 'S':(0,-self.MOVE_DISTANCE)}
-        self._n_states = (2+self._nx) * (2+self._ny)
     
         # Placeholders for the goal location(s) and initial location(s)
         self._goal_locations = []
@@ -100,7 +106,7 @@ class Maze(object):
         return list(self._state)
 
     def getNStates(self):
-        return (self._nx-1, self._ny-1)
+        return (self._ux-1, self._uy-1)
     
     def getReward(self):
         if self.reachedGoalState():
@@ -208,16 +214,16 @@ class RandomGoalOpenField(Maze):
         hop by their adjoining states.
         """
 
-        n_reachable_states = (self._nx - 1) * (self._ny - 1)
+        n_reachable_states = (self._ux - 1) * (self._uy - 1)
         transition_matrix  = np.zeros((n_reachable_states, n_reachable_states), dtype=float)
         action_selection_prob = 1.0/len(self._action_map)
-        for st_x in range(1, self._nx):
-            for st_y in range(1, self._ny):
+        for st_x in range(1, self._ux):
+            for st_y in range(1, self._uy):
                 self._state         = (st_x, st_y)
-                current_state_idx   = ((self._ny - 1) * (st_x-1)) + (st_y-1)
+                current_state_idx   = ((self._uy - 1) * (st_x-1)) + (st_y-1)
                 for action in self._action_map:
                     translation     = self.convertActionToTranslation(action)
-                    new_state_idx   = round((self._ny - 1) * (st_x + translation[0] - 1)) + round(st_y + translation[1] - 1)
+                    new_state_idx   = round((self._uy - 1) * (st_x + translation[0] - 1)) + round(st_y + translation[1] - 1)
                     transition_matrix[new_state_idx, current_state_idx] += action_selection_prob
         return transition_matrix
 
@@ -228,11 +234,11 @@ class RandomGoalOpenField(Maze):
         reward to compensate for the path taken to get there.
         """
 
-        n_reachable_states = (self._nx - 1) * (self._ny - 1)
+        n_reachable_states = (self._ux - 1) * (self._uy - 1)
         reward_vec = self.NON_GOAL_STATE_REWARD * np.ones((n_reachable_states,1), dtype=float)
 
         for goal in self._goal_locations:
-            reward_vec[((goal[0]-1) * (self._ny - 1)) + (goal[1]-1)] = self.GOAL_STATE_REWARD
+            reward_vec[((goal[0]-1) * (self._uy - 1)) + (goal[1]-1)] = self.GOAL_STATE_REWARD
         return reward_vec
 
 class Wall(object):
