@@ -176,43 +176,6 @@ class Maze(object):
         transition matrix (probability of transitioning from state A to state
         B) assuming all legal transitions from a state are equally likely.
         """
-        raise NotImplementedError()
-
-    def getRewardVector(self):
-        raise NotImplementedError()
-
-    def reachedGoalState(self):
-        raise NotImplementedError()
-
-    def getOptimalStepsToGoal(self):
-        raise NotImplementedError()
-
-class RandomGoalOpenField(Maze):
-    def __init__(self, nx, ny):
-        # Call the parent class constructor
-        super(RandomGoalOpenField, self).__init__(nx, ny)
-        self.setup()
-        return
-
-    def _getValidLocation(self):
-        # Return any point at random from the field
-        return (np.random.randint(1, self._nx), np.random.randint(1,self._ny))
-    
-    def reachedGoalState(self):
-        # There is just ONE goal location, nothing complicated here
-        goal_location = self._goal_locations[0]
-        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
-
-    def getOptimalStepsToGoal(self):
-        goal_location = self._goal_locations[0]
-        init_location = self._init_locations[0]
-        return np.round((abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))/self.MOVE_DISTANCE)
-
-    def getTransitionMatrix(self):
-        """
-        In a Random Goal, Open Field task, all the states are reachable in 1
-        hop by their adjoining states.
-        """
 
         n_reachable_states = (self._ux - 1) * (self._uy - 1)
         transition_matrix  = np.zeros((n_reachable_states, n_reachable_states), dtype=float)
@@ -240,6 +203,33 @@ class RandomGoalOpenField(Maze):
         for goal in self._goal_locations:
             reward_vec[((goal[0]-1) * (self._uy - 1)) + (goal[1]-1)] = self.GOAL_STATE_REWARD
         return reward_vec
+
+    def reachedGoalState(self):
+        raise NotImplementedError()
+
+    def getOptimalStepsToGoal(self):
+        raise NotImplementedError()
+
+class RandomGoalOpenField(Maze):
+    def __init__(self, nx, ny):
+        # Call the parent class constructor
+        super(RandomGoalOpenField, self).__init__(nx, ny)
+        self.setup()
+        return
+
+    def _getValidLocation(self):
+        # Return any point at random from the field
+        return (np.random.randint(1, self._nx), np.random.randint(1,self._ny))
+    
+    def reachedGoalState(self):
+        # There is just ONE goal location, nothing complicated here
+        goal_location = self._goal_locations[0]
+        return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
+
+    def getOptimalStepsToGoal(self):
+        goal_location = self._goal_locations[0]
+        init_location = self._init_locations[0]
+        return np.round((abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))/self.MOVE_DISTANCE)
 
 class Wall(object):
     """
@@ -276,16 +266,16 @@ class Wall(object):
         # UPDATE (2018/06/19): Taking into account that we are dealing with WALL SEGMENTS and not infinite walls
 
         if self._is_vert:
-            if (pt1[0] < self._start[0] < pt2[0]) or (pt2[0] < self._start[0] < pt1[0]):
+            if (pt1[0] <= self._start[0] <= pt2[0]) or (pt2[0] <= self._start[0] <= pt1[0]):
                 # Check that the intersection lies within the wall segment
-                return ((self._start[1] < pt1[1] < self._end[1]) or (self._start[1] > pt1[1] > self._end[1])) and \
-                ((self._start[1] < pt1[1] < self._end[1]) or (self._start[1] > pt1[1] > self._end[1]))
+                return ((self._start[1] <= pt1[1] <= self._end[1]) or (self._start[1] >= pt1[1] >= self._end[1])) and \
+                ((self._start[1] <= pt1[1] <= self._end[1]) or (self._start[1] >= pt1[1] >= self._end[1]))
             else:
                 return False
 
-        if (pt1[1] < self._start[1] < pt2[1]) or (pt2[1] < self._start[1] < pt1[1]):
-            return ((self._start[0] < pt1[0] < self._end[0]) or (self._start[0] > pt1[0] > self._end[0])) and \
-            ((self._start[0] < pt1[0] < self._end[0]) or (self._start[0] > pt1[0] > self._end[0]))
+        if (pt1[1] <= self._start[1] <= pt2[1]) or (pt2[1] <= self._start[1] <= pt1[1]):
+            return ((self._start[0] <= pt1[0] <= self._end[0]) or (self._start[0] >= pt1[0] >= self._end[0])) and \
+            ((self._start[0] <= pt1[0] <= self._end[0]) or (self._start[0] >= pt1[0] >= self._end[0]))
         return False
 
     def getPlottingData(self):
@@ -356,3 +346,8 @@ class MazeWithWalls(Maze):
         # There is just ONE goal location, nothing complicated here
         goal_location = self._goal_locations[0]
         return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
+
+    def getOptimalStepsToGoal(self):
+        # TODO: Will have to implement BFS here to find the optimal number of
+        # steps, not sure if it is work it :(
+        return 0
