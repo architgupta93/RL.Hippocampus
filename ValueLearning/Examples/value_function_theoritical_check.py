@@ -33,5 +33,5 @@ def testMaze(n_trials, dbg_lvl=1):
     plt.show()
 
 if __name__ == "__main__":
-    n_trials = 100
+    n_trials = 200
     testMaze(n_trials, dbg_lvl=1)
