@@ -51,7 +51,9 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
 
         initial_state = environment.getCurrentState()
         canvas.update(initial_state)
-        while not environment.reachedGoalState():
+        terminate_trial = False
+        while not terminate_trial:
+            terminate_trial = environment.reachedGoalState()
             if (n_steps[trial] > max_steps):
                 break
 

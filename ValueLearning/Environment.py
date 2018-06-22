@@ -86,10 +86,15 @@ class Maze(object):
         """
 
         translation = self.convertActionToTranslation(action)
+
+        # In our case, reward is contingent on which state you are in. Being in
+        # the goal state here means that you will be rewarded.
+        reward = self.getReward()
+
         self._state[0] += translation[0]
         self._state[1] += translation[1]
 
-        return self.getReward()
+        return reward
     
     def getCurrentState(self):
         return list(self._state)
