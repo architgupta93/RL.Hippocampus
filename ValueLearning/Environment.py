@@ -256,9 +256,11 @@ class Wall(object):
     def includesPoint(self, pt):
         # Check if the wall segment includes the specified point
         if self._is_vert:
-            return ((self._start[1] < pt[1] < self._end[1]) and (abs(self._start[0] - pt[0]) < self._WALL_THICKNESSS))
+            return (((self._start[1] <= pt[1] <= self._end[1]) or (self._end[1] <= pt[1] <= self._start[1])) \
+            and (abs(self._start[0] - pt[0]) <= self._WALL_THICKNESSS))
 
-        return ((self._start[0] < pt[0] < self._end[0]) and (abs(self._start[1] - pt[1]) < self._WALL_THICKNESSS))
+        return (((self._start[0] <= pt[0] <= self._end[0]) or (self._end[0] <= pt[0] <= self._start[0])) \
+        and (abs(self._start[1] - pt[1]) <= self._WALL_THICKNESSS))
 
     def crosses(self, pt1, pt2):
         # Check if this wall segment crosses the segment 'other_wall'. This can

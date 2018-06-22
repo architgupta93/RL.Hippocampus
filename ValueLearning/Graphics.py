@@ -143,3 +143,18 @@ def histogram(data):
     axes.set_ylabel('Instances')
     axes.grid(True)
     plt.show()
+
+def showImage(data, xticks=None, yticks=None):
+    """
+    Used to show 2D data using imshow from matplotlib. Issues regarding
+    transposition of data, and setting up the correct origin are resolved
+    """
+    plt.imshow(data.T, origin='lower')
+    if xticks is not None:
+        plt.xticks(xticks)
+
+    if yticks is not None:
+        plt.yticks(yticks)
+
+    plt.colorbar()
+    plt.show()

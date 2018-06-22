@@ -1,6 +1,6 @@
-import matplotlib.pylab as plt
 import numpy as np
 import random
+import Graphics
 
 class Agent(object):
     """
@@ -185,13 +185,8 @@ class IdealValueAgent(Critic):
         self._r_vec = environment.getRewardVector()
 
         # Debug: Plot the transition matrix and the reward vector
-        plt.imshow(self._t_mat)
-        plt.colorbar()
-        plt.show()
-
-        plt.imshow(np.reshape(self._r_vec, self._dims))
-        plt.colorbar()
-        plt.show()
+        Graphics.showImage(self._t_mat)
+        Graphics.showImage(np.reshape(self._r_vec, self._dims))
 
     def getValue(self):
         raise NotImplementedError()

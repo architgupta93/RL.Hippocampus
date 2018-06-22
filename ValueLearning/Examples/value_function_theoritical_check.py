@@ -5,8 +5,7 @@ import Environment
 import Hippocampus
 import ValueLearning
 import Agents
-
-import matplotlib.pylab as plt
+import Graphics
 
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
@@ -49,9 +48,7 @@ def testMaze(n_trials, dbg_lvl=1):
     ideal_critic = Agents.IdealValueAgent(maze, place_cells)
     optimal_value_function = ideal_critic.getValueFunction()
 
-    plt.imshow(optimal_value_function)
-    plt.colorbar()
-    plt.show()
+    Graphics.showImage(optimal_value_function)
 
 if __name__ == "__main__":
     n_trials = 2
