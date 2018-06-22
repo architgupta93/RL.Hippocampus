@@ -158,6 +158,18 @@ class Maze(object):
     def _getValidLocation(self):
         raise NotImplementedError()
 
+    def getTransitionMatrix(self):
+        """
+        For the discrete state system (where you hop only between the
+        specified states of the system, and not in between them), get the
+        transition matrix (probability of transitioning from state A to state
+        B) assuming all legal transitions from a state are equally likely.
+        """
+        raise NotImplementedError()
+
+    def getRewardVector(self):
+        raise NotImplementedError()
+
     def reachedGoalState(self):
         raise NotImplementedError()
 
@@ -184,6 +196,38 @@ class RandomGoalOpenField(Maze):
         goal_location = self._goal_locations[0]
         init_location = self._init_locations[0]
         return np.round((abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))/self.MOVE_DISTANCE)
+
+    def getTransitionMatrix(self):
+        """
+        In a Random Goal, Open Field task, all the states are reachable in 1
+        hop by their adjoining states.
+        """
+
+        n_reachable_states = (self._nx - 1) * (self._ny - 1)
+        transition_matrix  = np.zeros((n_reachable_states, n_reachable_states), dtype=float)
+        action_selection_prob = 1.0/len(self._action_map)
+        for st_x in range(1, self._nx):
+            for st_y in range(1, self._ny):
+                self._state         = (st_x, st_y)
+                current_state_idx   = ((self._ny - 1) * (st_x-1)) + (st_y-1)
+                for action in self._action_map:
+                    translation     = self.convertActionToTranslation(action)
+                    new_state_idx   = round((self._ny - 1) * (st_x + translation[0] - 1)) + round(st_y + translation[1] - 1)
+                    transition_matrix[new_state_idx, current_state_idx] += action_selection_prob
+        return transition_matrix
+
+    def getRewardVector(self):
+        """
+        In the open field, every location has a small negative reward (for
+        taking 1 step to get there). Goal location(s) have a large positive
+        reward to compensate for the path taken to get there.
+        """
+
+        n_reachable_states = (self._nx - 1) * (self._ny - 1)
+        reward_vec = self.NON_GOAL_STATE_REWARD * np.ones((n_reachable_states,1), dtype=float)
+
+        for goal in self._goal_locations:
+            reward_vec[((goal[0]-1) * (self._ny - 1)) + (goal[1]-1)] = self.GOAL_STATE_REWARD
 
 class Wall(object):
     """

@@ -168,15 +168,39 @@ class Critic(Agent):
         
         return prediction_error
 
-class IdealValueFunction(Critic):
+class IdealValueAgent(Critic):
     """
     Instead of computing the Value function iteratively, this generates the
     ideal value function that a Critic should converge to. Good for checking
     correctness.
     """
 
-    def __init__(self, n_fields):
-        super(IdealValueFunction, self).__init__(n_fields)
+    def __init__(self, environment, place_cells):
+        super(IdealValueAgent, self).__init__(len(place_cells))
+
+        # Get the transition matrix for the environment
+        self._t_mat = environment.getTransitionMatrix()
+        self._r_vec = environment.getRewardVector()
+
+        # Debug: Plot the transition matrix and the reward vector
+        # TODO
+
+    def getValue(self):
+        raise NotImplementedError()
+
+    def getValueFunction(self):
+        """
+        Calculate the value function for all the states and return it as a matrix.
+                        v_fun = T * (r + d * v_fun),
+                        (I - dT) * v_fun = r
+
+                        v_fun: Value Function
+                        T: Transition matrix
+                        r: Reward vector
+                        d: discount factor
+        """
+        v_fun = np.linalg.solve((np.eye(len(self._r_vec)) - self._discount_factor * self._t_mat), self._r_vec)
+        return v_fun
 
 class IdealActor(Agent):
     """

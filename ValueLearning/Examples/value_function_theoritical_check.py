@@ -4,6 +4,7 @@
 import Environment
 import Hippocampus
 import ValueLearning
+import Agents
 
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
@@ -20,6 +21,10 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     ValueLearning.learnValueFunction(n_trials, maze, place_cells)
+
+    # Evaluate the theoritical value function for a random policy
+    ideal_critic = Agents.IdealValueAgent(maze, place_cells)
+    optimal_value_function = ideal_critic.getValueFunction()
 
 if __name__ == "__main__":
     n_trials = 40
