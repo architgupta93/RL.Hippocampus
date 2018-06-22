@@ -1,3 +1,4 @@
+import matplotlib.pylab as plt
 import numpy as np
 import random
 
@@ -179,11 +180,18 @@ class IdealValueAgent(Critic):
         super(IdealValueAgent, self).__init__(len(place_cells))
 
         # Get the transition matrix for the environment
+        self._dims  = environment.getNStates()
         self._t_mat = environment.getTransitionMatrix()
         self._r_vec = environment.getRewardVector()
 
         # Debug: Plot the transition matrix and the reward vector
-        # TODO
+        plt.imshow(self._t_mat)
+        plt.colorbar()
+        plt.show()
+
+        plt.imshow(np.reshape(self._r_vec, self._dims))
+        plt.colorbar()
+        plt.show()
 
     def getValue(self):
         raise NotImplementedError()
@@ -200,7 +208,7 @@ class IdealValueAgent(Critic):
                         d: discount factor
         """
         v_fun = np.linalg.solve((np.eye(len(self._r_vec)) - self._discount_factor * self._t_mat), self._r_vec)
-        return v_fun
+        return np.reshape(v_fun, self._dims)
 
 class IdealActor(Agent):
     """

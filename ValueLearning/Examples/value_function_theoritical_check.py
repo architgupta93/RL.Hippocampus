@@ -6,6 +6,8 @@ import Hippocampus
 import ValueLearning
 import Agents
 
+import matplotlib.pylab as plt
+
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
     # Create a very small maze
@@ -26,6 +28,10 @@ def testMaze(n_trials, dbg_lvl=1):
     ideal_critic = Agents.IdealValueAgent(maze, place_cells)
     optimal_value_function = ideal_critic.getValueFunction()
 
+    plt.imshow(optimal_value_function)
+    plt.colorbar()
+    plt.show()
+
 if __name__ == "__main__":
-    n_trials = 40
-    testMaze(40, dbg_lvl=1)
+    n_trials = 100
+    testMaze(n_trials, dbg_lvl=1)

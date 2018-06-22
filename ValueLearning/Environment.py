@@ -95,7 +95,7 @@ class Maze(object):
         return list(self._state)
 
     def getNStates(self):
-        return self._n_states
+        return (self._nx-1, self._ny-1)
     
     def getReward(self):
         if self.reachedGoalState():
@@ -228,6 +228,7 @@ class RandomGoalOpenField(Maze):
 
         for goal in self._goal_locations:
             reward_vec[((goal[0]-1) * (self._ny - 1)) + (goal[1]-1)] = self.GOAL_STATE_REWARD
+        return reward_vec
 
 class Wall(object):
     """
