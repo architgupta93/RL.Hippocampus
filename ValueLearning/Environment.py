@@ -12,7 +12,7 @@ class Maze(object):
     # There can be a reward(s) associated with both the goal and non-goal states.
     GOAL_STATE_REWARD = 0.05
     NON_GOAL_STATE_REWARD = -0.0001
-    MOVE_DISTANCE = 1.0
+    MOVE_DISTANCE = 0.8
 
     def __init__(self, nx, ny):
         # Macro-states for Place field positioning
@@ -79,7 +79,10 @@ class Maze(object):
         if self._state[1] + translation[1] >= self._ny:
             return no_movement
 
-        # TODO: Can we run into a never ending loop because of this?
+        # Check if we are in the goal state
+        if self.reachedGoalState():
+            return no_movement
+
         return translation
 
     def move(self, action):
@@ -268,16 +271,23 @@ class Wall(object):
         # UPDATE (2018/06/19): Taking into account that we are dealing with WALL SEGMENTS and not infinite walls
 
         if self._is_vert:
+            # If the movement is also vertical
+            if pt1[0] == pt2[0] == self._start[0]:
+                return ((self._start[1] < pt1[1] < self._end[1]) or (self._start[1] < pt2[1] < self._end[1]))
+
             if (pt1[0] <= self._start[0] <= pt2[0]) or (pt2[0] <= self._start[0] <= pt1[0]):
                 # Check that the intersection lies within the wall segment
-                return ((self._start[1] <= pt1[1] <= self._end[1]) or (self._start[1] >= pt1[1] >= self._end[1])) and \
-                ((self._start[1] <= pt1[1] <= self._end[1]) or (self._start[1] >= pt1[1] >= self._end[1]))
+                return ((self._start[1] < pt1[1] < self._end[1]) or (self._start[1] > pt1[1] > self._end[1])) and \
+                ((self._start[1] < pt1[1] < self._end[1]) or (self._start[1] > pt1[1] > self._end[1]))
             else:
                 return False
 
+        if pt1[1] == pt2[1] == self._start[1]:
+            return ((self._start[0] < pt1[0] < self._end[0]) or (self._start[0] < pt2[0] < self._end[0]))
+
         if (pt1[1] <= self._start[1] <= pt2[1]) or (pt2[1] <= self._start[1] <= pt1[1]):
-            return ((self._start[0] <= pt1[0] <= self._end[0]) or (self._start[0] >= pt1[0] >= self._end[0])) and \
-            ((self._start[0] <= pt1[0] <= self._end[0]) or (self._start[0] >= pt1[0] >= self._end[0]))
+            return ((self._start[0] < pt1[0] < self._end[0]) or (self._start[0] > pt1[0] > self._end[0])) and \
+            ((self._start[0] < pt1[0] < self._end[0]) or (self._start[0] > pt1[0] > self._end[0]))
         return False
 
     def getPlottingData(self):
@@ -324,6 +334,10 @@ class MazeWithWalls(Maze):
         for wall in self._walls:
             if wall.crosses(self._state, next_naive_state):
                 return no_movement
+
+        # Check if we are in the goal state
+        if self.reachedGoalState():
+            return no_movement
 
         return translation
 

@@ -67,5 +67,5 @@ def testMaze(n_trials, dbg_lvl=1):
     Graphics.showImage(optimal_value_function)
 
 if __name__ == "__main__":
-    n_trials = 20
+    n_trials = 200
     testMaze(n_trials, dbg_lvl=1)
