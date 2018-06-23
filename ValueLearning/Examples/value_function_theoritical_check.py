@@ -24,6 +24,8 @@ def testMaze(n_trials, dbg_lvl=1):
 
     nx = 6
     ny = 4
+    # maze = Environment.RandomGoalOpenField(nx, ny)
+
     # Adding walls and constructing the environment
     lp_wall = Environment.Wall((0,2), (2,2))
     rp_wall = Environment.Wall((4,2), (6,2))
@@ -67,5 +69,5 @@ def testMaze(n_trials, dbg_lvl=1):
     Graphics.showImage(optimal_value_function)
 
 if __name__ == "__main__":
-    n_trials = 200
-    testMaze(n_trials, dbg_lvl=1)
+    n_trials = 2
+    testMaze(n_trials, dbg_lvl=0)

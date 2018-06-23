@@ -11,8 +11,8 @@ class Maze(object):
 
     # There can be a reward(s) associated with both the goal and non-goal states.
     GOAL_STATE_REWARD = 0.05
-    NON_GOAL_STATE_REWARD = -0.0001
-    MOVE_DISTANCE = 0.8
+    NON_GOAL_STATE_REWARD = -0.0005
+    MOVE_DISTANCE = 1.0
 
     def __init__(self, nx, ny):
         # Macro-states for Place field positioning
@@ -185,12 +185,20 @@ class Maze(object):
         action_selection_prob = 1.0/len(self._action_map)
         for st_x in range(1, self._ux):
             for st_y in range(1, self._uy):
-                self._state         = (st_x, st_y)
+                self._state         = (st_x * self.MOVE_DISTANCE, st_y * self.MOVE_DISTANCE)
                 current_state_idx   = ((self._uy - 1) * (st_x-1)) + (st_y-1)
                 for action in self._action_map:
                     translation     = self.convertActionToTranslation(action)
                     new_state_idx   = round((self._uy - 1) * (st_x + translation[0] - 1)) + round(st_y + translation[1] - 1)
-                    transition_matrix[new_state_idx, current_state_idx] += action_selection_prob
+                    transition_matrix[current_state_idx, new_state_idx] += action_selection_prob
+
+        # For the goal state, none of this applies, you basically stay in the
+        # goal state forever
+        for goal in self._goal_locations:
+            goal_state_idx = ((round(goal[0]/self.MOVE_DISTANCE)-1) * (self._uy - 1)) + (round(goal[1]/self.MOVE_DISTANCE)-1)
+            transition_matrix[goal_state_idx, :] = 0.0
+            transition_matrix[goal_state_idx, goal_state_idx] = 1.0
+
         return transition_matrix
 
     def getRewardVector(self):
@@ -204,7 +212,7 @@ class Maze(object):
         reward_vec = self.NON_GOAL_STATE_REWARD * np.ones((n_reachable_states,1), dtype=float)
 
         for goal in self._goal_locations:
-            reward_vec[((goal[0]-1) * (self._uy - 1)) + (goal[1]-1)] = self.GOAL_STATE_REWARD
+            reward_vec[((round(goal[0]/self.MOVE_DISTANCE)-1) * (self._uy - 1)) + (round(goal[1]/self.MOVE_DISTANCE)-1)] = self.GOAL_STATE_REWARD
         return reward_vec
 
     def reachedGoalState(self):

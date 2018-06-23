@@ -195,14 +195,15 @@ class IdealValueAgent(Critic):
         """
         Calculate the value function for all the states and return it as a matrix.
                         v_fun = T * (r + d * v_fun),
-                        (I - dT) * v_fun = r
+                        (I - dT) * v_fun = T*r
 
                         v_fun: Value Function
                         T: Transition matrix
                         r: Reward vector
                         d: discount factor
         """
-        v_fun = np.linalg.solve((np.eye(len(self._r_vec)) - self._discount_factor * self._t_mat), self._r_vec)
+        b_val = np.matmul(self._t_mat, self._r_vec) # In Ax = b
+        v_fun = np.linalg.solve(np.eye(len(self._r_vec)) - self._discount_factor * self._t_mat, b_val)
         return np.reshape(v_fun, self._dims)
 
 class IdealActor(Agent):
