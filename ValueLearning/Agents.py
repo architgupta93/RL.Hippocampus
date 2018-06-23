@@ -140,7 +140,7 @@ class Critic(Agent):
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
         self.INITIAL_WEIGHT_VAR = 0.00001
-        self._learning_rate   = 2.0
+        self._learning_rate   = 200.0/self._n_fields
         self._discount_factor = 0.99
 
         # Weights to map place field activities to value

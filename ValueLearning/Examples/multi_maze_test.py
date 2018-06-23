@@ -19,7 +19,7 @@ def testMaze():
     n_fields = round(1.0 * (nx + 3) * (ny+3))
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
-    n_training_trials = 20
+    n_training_trials = 200
     n_navigation_trials = 10
 
     n_alternations = 4
