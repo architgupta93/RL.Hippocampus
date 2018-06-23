@@ -11,18 +11,18 @@ def testMaze():
     """
     No comments here. Look at single_maze_test.py for more details!
     """
-    ValueLearning.DBG_LVL = 0
+    ValueLearning.DBG_LVL = 1
 
-    nx = 10
-    ny = 10
+    nx = 4
+    ny = 5
 
-    n_fields = round(0.5 * nx * ny)
+    n_fields = round(1.0 * (nx + 3) * (ny+3))
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
     n_training_trials = 20
     n_navigation_trials = 10
 
-    n_alternations = 1
+    n_alternations = 4
     max_nav_steps = 100
     max_train_steps = 200
 
@@ -34,7 +34,7 @@ def testMaze():
     # canvas_E1.visualizePlaceFields(place_cells_E1)
 
     # Create empty actors and critics
-    actor = Agents.Actor(env_E1.getActions(), n_cells)
+    actor = Agents.RandomAgent(env_E1.getActions(), n_cells)
     critic = Agents.Critic(n_cells)
 
     # Second Environment: This has a different set (but the same number) of
@@ -72,6 +72,7 @@ def testMaze():
     # critic_weights = np.reshape(critic.getWeights(), -1)
     # Graphics.histogram(critic_weights)
 
+    """
     # Actor
     actor_weights = np.reshape(actor.getWeights(), -1)
     Graphics.histogram(actor_weights)
@@ -88,6 +89,7 @@ def testMaze():
 
     print('Navigating Environment B')
     ValueLearning.navigate(n_trials, env_E2, place_cells_E2, actor, critic, max_nav_steps)
+    """
 
 if __name__ == "__main__":
     testMaze()
