@@ -5,6 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from MotionAnimation.PY import data_types as GR
 import numpy as np
 
+N_TICKS_TO_SHOW = 10
 class MazeCanvas(object):
     """
     Used for visualizing the current view of the state space, as well as the
@@ -24,30 +25,34 @@ class MazeCanvas(object):
         self._max_y    = maze_bounds[3]
         # plt.ion()
 
-    def visualizePlaceFields(self, place_cells):
+    def visualizePlaceField(self, place_cell):
         """
-        Show place cell activity for all the positions on the maze
+        Show place cell activity for all the positions on the maze for a
+        SINGLE cell.
+        """
+        x_locs = np.linspace(self._min_x, self._max_x, 200)
+        y_locs = np.linspace(self._min_y, self._max_y, 200)
+        activity = np.zeros((len(x_locs), len(y_locs)), dtype=float)
+        for xi, px in enumerate(x_locs):
+            for yj, py in enumerate(y_locs):
+                activity[xi, yj] = place_cell.getActivity((px, py))
+
+        showImage(activity, xticks=x_locs, yticks=y_locs)
+
+    def visualizeAggregatePlaceFields(self, place_cells):
+        """
+        Show place cell activity for all the positions on the maze aggregated
+        over all cells.
         """
 
-        x_locs = np.linspace(self._min_x, self._max_x, 100)
-        y_locs = np.linspace(self._min_y, self._max_y, 100)
+        x_locs = np.linspace(self._min_x, self._max_x, 200)
+        y_locs = np.linspace(self._min_y, self._max_y, 200)
         activity = np.zeros((len(x_locs), len(y_locs)), dtype=float)
         for xi, px in enumerate(x_locs):
             for yj, py in enumerate(y_locs):
                 activity[xi, yj] = sum([pf.getActivity((px, py)) for pf in place_cells])
 
-        Y, X = np.meshgrid(y_locs, x_locs)
-        # 3D Figure, needs some effort
-        fig = plt.figure()
-        ax  = fig.add_subplot(111, projection='3d')
-        ax.plot_surface(X, Y, activity, cmap=plt.get_cmap(name='viridis'))
-        ax_cmap = cm.ScalarMappable(cmap='viridis')
-        ax_cmap.set_array(activity)
-        ax.set_xlabel('x')
-        ax.set_ylabel('y')
-        ax.set_zlabel('A(x, y)')
-        plt.colorbar(ax_cmap)
-        plt.show()
+        showImage(activity, xticks=x_locs, yticks=y_locs)
 
     def update(self, next_state):
         # Append the data points to the appropriate trajectory object
@@ -149,12 +154,14 @@ def showImage(data, xticks=None, yticks=None):
     Used to show 2D data using imshow from matplotlib. Issues regarding
     transposition of data, and setting up the correct origin are resolved
     """
+
+    data_shape = np.shape(data)
     plt.imshow(data.T, origin='lower')
     if xticks is not None:
-        plt.xticks(xticks)
+        plt.xticks(np.linspace(1, data_shape[0], num=N_TICKS_TO_SHOW), np.round(np.linspace(xticks[0], xticks[-1], N_TICKS_TO_SHOW), 2))
 
     if yticks is not None:
-        plt.yticks(yticks)
+        plt.yticks(np.linspace(1, data_shape[1], num=N_TICKS_TO_SHOW), np.round(np.linspace(yticks[0], yticks[-1], N_TICKS_TO_SHOW), 2))
 
     plt.colorbar()
     plt.show()
