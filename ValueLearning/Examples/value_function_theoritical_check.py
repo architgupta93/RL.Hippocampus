@@ -7,7 +7,9 @@ import ValueLearning
 import Agents
 import Graphics
 
+import numpy as np
 import matplotlib.pylab as plt
+from sklearn.decomposition import PCA
 
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
@@ -68,13 +70,29 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 1
+    n_episodes     = 100
+    training_eps   = 50
     canvas         = Graphics.MazeCanvas(maze)
+    weights        = np.empty((n_episodes, n_cells), dtype=float)
     for episode in range(n_episodes):
         (_, amateur_critic, _) = ValueLearning.learnValueFunction(n_trials, maze, place_cells, critic=amateur_critic, max_steps=1000)
-        canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
-        input('Ended Episode %d'% episode)
-        print()
+        weights[episode, :]    = amateur_critic.getWeights()
+        # canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
+        print('Ended Episode %d'% episode)
+        # input()
+
+    # Decompose the weight sequence into its principal components
+    components = PCA(n_components = 2)
+    components.fit(weights[-training_eps:-1,:])
+    """ DEBUG
+    print(components.explained_variance_ratio_)
+    print(components.singular_values_)
+    """
+
+    # Get the decomposition of the weight vectors into the constituents 
+    transformed_weights = components.transform(weights)
+    plt.plot(transformed_weights)
+    plt.show()
 
     # Evaluate the theoritical value function for a random policy
     ideal_critic = Agents.IdealValueAgent(maze, place_cells)
@@ -82,8 +100,8 @@ def testMaze(n_trials, dbg_lvl=1):
 
     scaling_factor = 1.0/(1 - amateur_critic.getDiscountFactor())
     Graphics.showImage(optimal_value_function, range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
-    input()
+    input('Press any key to Exit!')
 
 if __name__ == "__main__":
-    n_trials = 100
+    n_trials = 10
     testMaze(n_trials, dbg_lvl=0)
