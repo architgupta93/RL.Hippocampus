@@ -8,8 +8,6 @@ import Agents
 import Graphics
 
 import numpy as np
-import matplotlib.pylab as plt
-from sklearn.decomposition import PCA
 
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
@@ -84,28 +82,15 @@ def testMaze(n_trials, dbg_lvl=1):
     # Draw the final value funciton
     canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
 
-    # Decompose the weight sequence into its principal components
-    components = PCA(n_components = 2)
-
     # Fit only the last few entries
     # components.fit(weights[-training_eps:-1,:])
-
-    # Fit all the entries
-    components.fit(weights)
 
     """ DEBUG
     print(components.explained_variance_ratio_)
     print(components.singular_values_)
     """
 
-    # Get the decomposition of the weight vectors into the constituents 
-    transformed_weights = components.transform(weights)
-    plt.figure()
-    plt.scatter(transformed_weights[:, 0], transformed_weights[:, 1], c=range(n_episodes), \
-        cmap='viridis', marker='d', alpha=0.5)
-    plt.colorbar()
-    plt.grid()
-    plt.show()
+    Graphics.showDecomposition(weights)
 
     # Evaluate the theoritical value function for a random policy
     ideal_critic = Agents.IdealValueAgent(maze, place_cells)

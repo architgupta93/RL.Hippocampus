@@ -3,6 +3,7 @@ import matplotlib.cm as cm
 from matplotlib.ticker import FormatStrFormatter
 from mpl_toolkits.mplot3d import Axes3D
 from MotionAnimation.PY import data_types as GR
+from sklearn.decomposition import PCA
 import numpy as np
 
 MAX_TICKS_TO_SHOW = 10
@@ -201,3 +202,38 @@ def showSurface(data, xticks=None, yticks=None):
     ax.xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gcf().show()
+
+def showDecomposition(values, components=None, title=None):
+    """
+    Show the decomposition of values into principal components. The component
+    axes can be passed in, or new ones can be created from values themselves
+    if nothing is passed in.
+    """
+
+    if components is None:
+        # Decompose the weight sequence into its principal components
+        components = PCA(n_components = 2)
+
+        # Fit all the entries
+        components.fit(values)
+
+    # Get the corresponding singular values
+    singular_values = components.singular_values_
+
+    # Get the decomposition of the weight vectors into the constituents 
+    n_samples = np.shape(values)[0]
+    transformed_values = components.transform(values)
+    plt.figure()
+    plt.scatter(transformed_values[:, 0], transformed_values[:, 1], c=range(n_samples), \
+        cmap='viridis', marker='d', alpha=0.9)
+    plt.xlabel('PCA - 1, SV - %.2f'% singular_values[0])
+    plt.ylabel('PCA - 2, SV - %.2f'% singular_values[1])
+    plt.colorbar()
+    plt.grid()
+
+    if title is not None:
+        plt.title(title)
+
+    plt.gcf().show()
+    return components
+

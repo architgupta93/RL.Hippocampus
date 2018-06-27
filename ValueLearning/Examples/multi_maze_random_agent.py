@@ -25,6 +25,7 @@ def testMaze():
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
     n_training_trials = 1
+    n_single_env_episodes = 100
     n_alternations = 100
     max_train_steps = 1000
 
@@ -34,6 +35,14 @@ def testMaze():
     place_cells_E1  = Hippocampus.assignPlaceCells(n_cells, place_fields_E1)
 
     # Train a critic on the first environment
+    print('Training Critic solely on Env A')
+    critic_E1  = None
+    weights_E1 = np.empty((n_single_env_episodes, n_cells), dtype=float) 
+    for episode in range(n_single_env_episodes):
+        (_, critic_E1, _) = ValueLearning.learnValueFunction(n_training_trials, env_E1, place_cells_E1, critic=critic_E1, max_steps=max_train_steps)
+        weights_E1[episode, :] = critic_E1.getWeights()
+
+    components_E1 = Graphics.showDecomposition(weights_E1)
 
     # Create empty actors and critics
     actor = Agents.RandomAgent(env_E1.getActions(), n_cells)
@@ -44,6 +53,22 @@ def testMaze():
     env_E2          = Environment.RandomGoalOpenField(nx, ny)
     place_fields_E2 = Hippocampus.setupPlaceFields(env_E2, n_fields)
     place_cells_E2  = Hippocampus.assignPlaceCells(n_cells, place_fields_E2)
+
+    # Train another critic on the second environment
+    print()
+    print('Training Critic solely on Env B')
+    critic_E2  = None
+    weights_E2 = np.empty((n_single_env_episodes, n_cells), dtype=float) 
+    for episode in range(n_single_env_episodes):
+        (_, critic_E2, _) = ValueLearning.learnValueFunction(n_training_trials, env_E2, place_cells_E2, critic=critic_E2, max_steps=max_train_steps)
+        weights_E2[episode, :] = critic_E2.getWeights()
+
+    components_E2 = Graphics.showDecomposition(weights_E2)
+
+    # Look at the projection of one environment's weights on the other's principal components
+    Graphics.showDecomposition(weights_E1, components=components_E2, title='E2 on E1')
+    Graphics.showDecomposition(weights_E2, components=components_E1, title='E1 on E2')
+    input('Press any key to start Alternation.')
 
     # This can be used to just reinforce the fact that the agent is indeed
     # random! The steps taken to goal would not change over time because of the
@@ -68,28 +93,18 @@ def testMaze():
         learning_steps_E2[alt] = np.mean(steps_E2)
         weights[2*alt + 1, :] = critic.getWeights()
 
-    # Decompose the weight sequence into its principal components
-    components = PCA(n_components = 2)
-
-    # Fit only the last few entries
-    # components.fit(weights[-training_eps:-1,:])
-
-    # Fit all the entries
-    components.fit(weights)
+    # Show the alternation weights in the two basis
+    Graphics.showDecomposition(weights, components=components_E1, title='Alternation weights in E1')
+    Graphics.showDecomposition(weights, components=components_E2, title='Alternation weights in E2')
+    input('Press any key to exit!')
+    
+    # joint_components = Graphics.showDecomposition(weights)
 
     """ DEBUG
     print(components.explained_variance_ratio_)
     print(components.singular_values_)
     """
 
-    # Get the decomposition of the weight vectors into the constituents 
-    transformed_weights = components.transform(weights)
-    plt.figure()
-    plt.scatter(transformed_weights[:, 0], transformed_weights[:, 1], c=range(2*n_alternations), \
-        cmap='viridis', marker='d', alpha=0.5)
-    plt.colorbar()
-    plt.grid()
-    plt.show()
     # canvas_E1.plotValueFunction(place_cells_E1, critic)
     # canvas_E2.plotValueFunction(place_cells_E2, critic)
 
