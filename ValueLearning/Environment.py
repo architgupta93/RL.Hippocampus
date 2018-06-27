@@ -24,6 +24,7 @@ class Maze(object):
         self._ux = round(nx/self.MOVE_DISTANCE)
         self._uy = round(ny/self.MOVE_DISTANCE)
 
+        # State and actions
         self._state = [0, 0]
         self._action_map = {'E':(-self.MOVE_DISTANCE, 0), 'W':(self.MOVE_DISTANCE,0), 'N':(0,self.MOVE_DISTANCE), 'S':(0,-self.MOVE_DISTANCE)}
     
@@ -143,13 +144,13 @@ class Maze(object):
     def redrawInitLocation(self):
         # Single, random start location inside the maze
         self._init_locations = [self._getValidLocation()]
+        self.resetInitLocation()
 
-        # Pick on the the initial locations
+    def resetInitLocation(self):
+        # Set the state to one of the initial locations that was previously selected
         initial_state = random.sample(self._init_locations, 1)[0]
         self._state[0] = initial_state[0]
         self._state[1] = initial_state[1]
-
-        return
 
     def redrawGoalLocation(self):
         # Have a single, random goal location inside the maze

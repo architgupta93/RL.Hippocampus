@@ -70,8 +70,8 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 100
-    training_eps   = 50
+    n_episodes     = 1000
+    training_eps   = round(n_episodes/2)
     canvas         = Graphics.MazeCanvas(maze)
     weights        = np.empty((n_episodes, n_cells), dtype=float)
     for episode in range(n_episodes):
@@ -81,9 +81,18 @@ def testMaze(n_trials, dbg_lvl=1):
         print('Ended Episode %d'% episode)
         # input()
 
+    # Draw the final value funciton
+    canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
+
     # Decompose the weight sequence into its principal components
     components = PCA(n_components = 2)
-    components.fit(weights[-training_eps:-1,:])
+
+    # Fit only the last few entries
+    # components.fit(weights[-training_eps:-1,:])
+
+    # Fit all the entries
+    components.fit(weights)
+
     """ DEBUG
     print(components.explained_variance_ratio_)
     print(components.singular_values_)
@@ -91,7 +100,11 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Get the decomposition of the weight vectors into the constituents 
     transformed_weights = components.transform(weights)
-    plt.plot(transformed_weights)
+    plt.figure()
+    plt.scatter(transformed_weights[:, 0], transformed_weights[:, 1], c=range(n_episodes), \
+        cmap='viridis', marker='d', alpha=0.5)
+    plt.colorbar()
+    plt.grid()
     plt.show()
 
     # Evaluate the theoritical value function for a random policy
@@ -103,5 +116,5 @@ def testMaze(n_trials, dbg_lvl=1):
     input('Press any key to Exit!')
 
 if __name__ == "__main__":
-    n_trials = 10
+    n_trials = 1
     testMaze(n_trials, dbg_lvl=0)
