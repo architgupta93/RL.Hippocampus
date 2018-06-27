@@ -214,25 +214,27 @@ def showDecomposition(values, components=None, title=None):
 
     if components is None:
         # Decompose the weight sequence into its principal components
-        decomposition = np.linalg.svd(values, full_matrices=False)
+        components = np.linalg.svd(values, full_matrices=False)
 
-    # Get the corresponding singular values
-    singular_values = decomposition[1]
-    n_singular_values = len(singular_values)
-    svs_to_show = min(MAX_SVS_TO_SHOW, n_singular_values)
-    print(singular_values)
+        # Get the corresponding singular values
+        singular_values = components[1]
+        n_singular_values = len(singular_values)
+        svs_to_show = min(MAX_SVS_TO_SHOW, n_singular_values)
+        # print(singular_values)
 
-    # Plot the singular values
-    plt.figure()
-    plt.scatter(range(1, 1+svs_to_show), singular_values[:svs_to_show], marker='s', c='red', alpha=0.8)
-    plt.yscale('log')
-    plt.ylabel('Singular Value')
-    plt.grid()
-    plt.gcf().show()
+        # Plot the singular values
+        plt.figure()
+        plt.scatter(range(1, 1+svs_to_show), singular_values[:svs_to_show], marker='s', c='red', alpha=0.8)
+        plt.yscale('log')
+        plt.ylabel('Singular Value')
+        plt.grid()
+        plt.gcf().show()
+    else:
+        singular_values = components[1]
 
     # Components
-    major_component = decomposition[0][:,0]
-    minor_component = decomposition[0][:,1]
+    major_component = components[0][:,0]
+    minor_component = components[0][:,1]
 
     # Get the decomposition of the weight vectors into the constituents 
     n_samples = np.shape(values)[1]

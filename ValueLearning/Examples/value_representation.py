@@ -48,7 +48,7 @@ class MazeThread(threading.Thread):
 
 if __name__ == "__main__":
     n_epochs = 1
-    n_train  = 100
+    n_train  = 1000
     n_nav    = 10
     threads  = [None] * n_epochs
 

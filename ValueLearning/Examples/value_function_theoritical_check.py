@@ -80,17 +80,14 @@ def testMaze(n_trials, dbg_lvl=1):
         # input()
 
     # Draw the final value funciton
-    # canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
-
-    # Fit only the last few entries
-    # components.fit(weights[-training_eps:-1,:])
+    canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
 
     """ DEBUG
     print(components.explained_variance_ratio_)
     print(components.singular_values_)
     """
 
-    Graphics.showDecomposition(weights)
+    # Graphics.showDecomposition(weights)
 
     # Evaluate the theoritical value function for a random policy
     ideal_critic = Agents.IdealValueAgent(maze, place_cells)

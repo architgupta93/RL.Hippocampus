@@ -25,7 +25,7 @@ def testMaze():
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
     n_training_trials = 1
-    n_single_env_episodes = 10
+    n_single_env_episodes = 100
     n_alternations = 10
     max_train_steps = 1000
 
@@ -37,12 +37,12 @@ def testMaze():
     # Train a critic on the first environment
     print('Training Critic solely on Env A')
     critic_E1  = None
-    weights_E1 = np.empty((n_single_env_episodes, n_cells), dtype=float) 
+    weights_E1 = np.empty((n_cells, n_single_env_episodes), dtype=float) 
     for episode in range(n_single_env_episodes):
         (_, critic_E1, _) = ValueLearning.learnValueFunction(n_training_trials, env_E1, place_cells_E1, critic=critic_E1, max_steps=max_train_steps)
-        weights_E1[episode, :] = critic_E1.getWeights()
+        weights_E1[:, episode] = critic_E1.getWeights()
 
-    components_E1 = Graphics.showDecomposition(weights_E1)
+    components_E1 = Graphics.showDecomposition(weights_E1, title='Environment 01')
 
     # Create empty actors and critics
     actor = Agents.RandomAgent(env_E1.getActions(), n_cells)
@@ -58,12 +58,12 @@ def testMaze():
     print()
     print('Training Critic solely on Env B')
     critic_E2  = None
-    weights_E2 = np.empty((n_single_env_episodes, n_cells), dtype=float) 
+    weights_E2 = np.empty((n_cells, n_single_env_episodes), dtype=float) 
     for episode in range(n_single_env_episodes):
         (_, critic_E2, _) = ValueLearning.learnValueFunction(n_training_trials, env_E2, place_cells_E2, critic=critic_E2, max_steps=max_train_steps)
-        weights_E2[episode, :] = critic_E2.getWeights()
+        weights_E2[:, episode] = critic_E2.getWeights()
 
-    components_E2 = Graphics.showDecomposition(weights_E2)
+    components_E2 = Graphics.showDecomposition(weights_E2, title='Environment 02')
 
     # Look at the projection of one environment's weights on the other's principal components
     Graphics.showDecomposition(weights_E1, components=components_E2, title='E2 on E1')
@@ -77,7 +77,7 @@ def testMaze():
     learning_steps_E2 = np.zeros((n_alternations, 1), dtype=float)
 
     # keep track of weights for PCA
-    weights        = np.empty((n_alternations * 2, n_cells), dtype=float)
+    weights        = np.empty((n_cells, n_alternations * 2), dtype=float)
     for alt in range(n_alternations):
         print('Alternation: %d' % alt)
         # First look at the performance of the agent in the task before it is
@@ -85,13 +85,13 @@ def testMaze():
         print('Learning Environment A')
         (actor, critic, steps_E1) = ValueLearning.learnValueFunction(n_training_trials, env_E1, place_cells_E1, actor, critic, max_train_steps)
         learning_steps_E1[alt] = np.mean(steps_E1)
-        weights[2*alt, :] = critic.getWeights()
+        weights[:, 2*alt] = critic.getWeights()
 
         # Repeat for environment 1
         print('Learning Environment B')
         (actor, critic, steps_E2) = ValueLearning.learnValueFunction(n_training_trials, env_E2, place_cells_E2, actor, critic, max_train_steps)
         learning_steps_E2[alt] = np.mean(steps_E2)
-        weights[2*alt + 1, :] = critic.getWeights()
+        weights[:, 2*alt + 1] = critic.getWeights()
 
     # Show the alternation weights in the two basis
     Graphics.showDecomposition(weights, components=components_E1, title='Alternation weights in E1')
