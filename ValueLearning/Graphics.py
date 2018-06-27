@@ -205,29 +205,43 @@ def showSurface(data, xticks=None, yticks=None):
 
 def showDecomposition(values, components=None, title=None):
     """
-    Show the decomposition of values into principal components. The component
-    axes can be passed in, or new ones can be created from values themselves
-    if nothing is passed in.
+    Show the decomposition of values into principal basis vectors (obtained
+    through sigular value decomposition). The component axes can be passed
+    in, or new ones can be created from values themselves if nothing is
+    passed in.
     """
+    MAX_SVS_TO_SHOW = 10
 
     if components is None:
         # Decompose the weight sequence into its principal components
-        components = PCA(n_components = 2)
-
-        # Fit all the entries
-        components.fit(values)
+        decomposition = np.linalg.svd(values, full_matrices=False)
 
     # Get the corresponding singular values
-    singular_values = components.singular_values_
+    singular_values = decomposition[1]
+    n_singular_values = len(singular_values)
+    svs_to_show = min(MAX_SVS_TO_SHOW, n_singular_values)
+    print(singular_values)
+
+    # Plot the singular values
+    plt.figure()
+    plt.scatter(range(1, 1+svs_to_show), singular_values[:svs_to_show], marker='s', c='red', alpha=0.8)
+    plt.yscale('log')
+    plt.ylabel('Singular Value')
+    plt.grid()
+    plt.gcf().show()
+
+    # Components
+    major_component = decomposition[0][:,0]
+    minor_component = decomposition[0][:,1]
 
     # Get the decomposition of the weight vectors into the constituents 
-    n_samples = np.shape(values)[0]
-    transformed_values = components.transform(values)
+    n_samples = np.shape(values)[1]
+    transformed_values = [np.dot(major_component, values), np.dot(minor_component, values)]
     plt.figure()
-    plt.scatter(transformed_values[:, 0], transformed_values[:, 1], c=range(n_samples), \
+    plt.scatter(transformed_values[0], transformed_values[1], c=range(n_samples), \
         cmap='viridis', marker='d', alpha=0.9)
-    plt.xlabel('PCA - 1, SV - %.2f'% singular_values[0])
-    plt.ylabel('PCA - 2, SV - %.2f'% singular_values[1])
+    plt.xlabel('Major, SV - %.2f'% singular_values[0])
+    plt.ylabel('Minor, SV - %.2f'% singular_values[1])
     plt.colorbar()
     plt.grid()
 

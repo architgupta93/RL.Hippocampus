@@ -68,19 +68,19 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 1000
+    n_episodes     = 100
     training_eps   = round(n_episodes/2)
     canvas         = Graphics.MazeCanvas(maze)
-    weights        = np.empty((n_episodes, n_cells), dtype=float)
+    weights        = np.empty((n_cells, n_episodes), dtype=float)
     for episode in range(n_episodes):
         (_, amateur_critic, _) = ValueLearning.learnValueFunction(n_trials, maze, place_cells, critic=amateur_critic, max_steps=1000)
-        weights[episode, :]    = amateur_critic.getWeights()
+        weights[:, episode]    = amateur_critic.getWeights()
         # canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
         print('Ended Episode %d'% episode)
         # input()
 
     # Draw the final value funciton
-    canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
+    # canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
 
     # Fit only the last few entries
     # components.fit(weights[-training_eps:-1,:])

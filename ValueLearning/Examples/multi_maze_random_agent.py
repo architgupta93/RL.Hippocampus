@@ -25,8 +25,8 @@ def testMaze():
     n_cells  = Hippocampus.N_CELLS_PER_FIELD * n_fields
 
     n_training_trials = 1
-    n_single_env_episodes = 100
-    n_alternations = 100
+    n_single_env_episodes = 10
+    n_alternations = 10
     max_train_steps = 1000
 
     # First Environment: Has its own place cells and place fields
