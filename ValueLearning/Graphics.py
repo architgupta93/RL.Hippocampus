@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from MotionAnimation.PY import data_types as GR
 import numpy as np
 
-N_TICKS_TO_SHOW = 10
+MAX_TICKS_TO_SHOW = 10
 class MazeCanvas(object):
     """
     Used for visualizing the current view of the state space, as well as the
@@ -66,12 +66,16 @@ class MazeCanvas(object):
     def animateTrajectory(self):
         self._anim_obj.plotTimedTR(object_type='point')
     
-    def plotValueFunction(self, place_cells, critic):
-        # Scale the number of data points in each dimension independently
-        nx_pts = round(20 * (self._max_x - self._min_x))
-        ny_pts = round(20 * (self._max_y - self._min_y))
-        x_locs = np.linspace(self._min_x, self._max_x, num=nx_pts)
-        y_locs = np.linspace(self._min_y, self._max_y, num=ny_pts)
+    def plotValueFunction(self, place_cells, critic, continuous=False):
+        if continuous:
+            # Scale the number of data points in each dimension independently
+            nx_pts = round(20 * (self._max_x - self._min_x - 2))
+            ny_pts = round(20 * (self._max_y - self._min_y - 2))
+            x_locs = np.linspace(self._min_x+1, self._max_x-1, num=nx_pts)
+            y_locs = np.linspace(self._min_y+1, self._max_y-1, num=ny_pts)
+        else:
+            x_locs = range(self._min_x+1, self._max_x)
+            y_locs = range(self._min_y+1, self._max_y)
 
         # Have never quite understood why Meshgrid works in such a wierd way
         values = np.zeros((len(x_locs), len(y_locs)), dtype=float)
@@ -80,23 +84,9 @@ class MazeCanvas(object):
                 pf_activity = [pf.getActivity((px, py)) for pf in place_cells]
                 values[xi, yj] = critic.getValue(pf_activity)
         
-        # print(values)
-        Y, X = np.meshgrid(y_locs, x_locs)
-
-        # 3D Figure, needs some effort
-        fig = plt.figure()
-        ax  = fig.add_subplot(111, projection='3d')
-        ax.plot_surface(X, Y, values)
-        ax.set_xlabel('x')
-        ax.set_ylabel('y')
-        # ax.set_zlabel('V(x, y)')
-
-        # Set the format for the axes ticks
-        ax.xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-        ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-        plt.show()
-
-        # TODO: On top of this plot, we should add the place field locations
+        if continuous:
+            showSurface(values, xticks=x_locs, yticks=y_locs)
+        showImage(values, xticks=x_locs, yticks=y_locs)
 
 class WallMazeCanvas(MazeCanvas):
     """
@@ -157,11 +147,45 @@ def showImage(data, xticks=None, yticks=None):
 
     data_shape = np.shape(data)
     plt.imshow(data.T, origin='lower')
+    # NOTE: LINSPACE in numpy includes the last point, whereas the vanilla
+    # 'range' does not. This is the cause of all the pain below!
     if xticks is not None:
-        plt.xticks(np.linspace(1, data_shape[0], num=N_TICKS_TO_SHOW), np.round(np.linspace(xticks[0], xticks[-1], N_TICKS_TO_SHOW), 2))
+        if len(xticks) > MAX_TICKS_TO_SHOW:
+            plt.xticks(np.linspace(0, data_shape[0]-1, num=MAX_TICKS_TO_SHOW), np.round(np.linspace(xticks[0], xticks[-1], num=MAX_TICKS_TO_SHOW), 2))
+        else:
+            plt.xticks(np.linspace(0, data_shape[0]-1, num=len(xticks)), np.round(xticks, 2))
 
     if yticks is not None:
-        plt.yticks(np.linspace(1, data_shape[1], num=N_TICKS_TO_SHOW), np.round(np.linspace(yticks[0], yticks[-1], N_TICKS_TO_SHOW), 2))
+        if len(yticks) > MAX_TICKS_TO_SHOW:
+            plt.yticks(np.linspace(0, data_shape[1]-1, num=MAX_TICKS_TO_SHOW), np.round(np.linspace(yticks[0], yticks[-1], num=MAX_TICKS_TO_SHOW), 2))
+        else:
+            plt.yticks(np.linspace(0, data_shape[1]-1, num=len(yticks)), np.round(yticks, 2))
 
     plt.colorbar()
+    plt.show()
+
+def showSurface(data, xticks=None, yticks=None):
+    """
+    Show 2D data as a surface plot. A colorbar plot is sometimes insufficient
+    for looking at the values of a function (especially for value function in
+    a task where adjoioning states tend to have similar values)
+    """
+    data_shape = np.shape(data)
+    if xticks is None:
+        xticks = range(data_shape[0])
+
+    if yticks is not None:
+        yticks = range(data_shape[1])
+    Y, X = np.meshgrid(yticks, xticks)
+
+    # 3D Figure, needs some effort
+    fig = plt.figure()
+    ax  = fig.add_subplot(111, projection='3d')
+    ax.plot_surface(X, Y, data)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+
+    # Set the format for the axes ticks
+    ax.xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.show()

@@ -14,32 +14,23 @@ def testMaze(n_train, n_nav):
     ValueLearning.DBG_LVL = 1
 
     # Experiment parameters
-    nx = 5
-    ny = 4
+    nx = 6
+    ny = 6
     n_fields = round(1.0 * (nx + 3) * (ny + 3))
     n_cells  = n_fields
 
     # Maze creation
     maze    = Environment.RandomGoalOpenField(nx, ny)
-    canvas  = Graphics.MazeCanvas(maze)
 
     # Generate place fields and place cells
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields)
     place_cells  = Hippocampus.assignPlaceCells(n_cells, place_fields)
-
-    # Visualize place fields for a few cells and then the aggregate activity
-    n_cells_to_visualize = 4
-    for cn in range(n_cells_to_visualize):
-        sample_cell = random.randint(0, len(place_cells))
-        canvas.visualizePlaceField(place_cells[sample_cell])
-    canvas.visualizeAggregatePlaceFields(place_cells)
 
     # Create Actor and Critic
     actor  = Agents.RandomAgent(maze.getActions(), n_cells)
     critic = Agents.Critic(n_fields)
 
     ValueLearning.learnValueFunction(n_train, maze, place_cells, actor, critic, max_steps=1000)
-    # canvas.plotValueFunction(place_cells, critic)
 
 class MazeThread(threading.Thread):
     def __init__(self, thread_id, n_train, n_nav):

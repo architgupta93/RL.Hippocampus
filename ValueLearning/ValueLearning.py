@@ -2,6 +2,7 @@ import Hippocampus
 import Agents
 import Graphics
 import numpy as np
+import random
 
 DBG_LVL = 0
 
@@ -25,6 +26,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
         particular state. These values are used for taking actions.
     """
 
+    # Visualize place fields for a few cells and then the aggregate activity
     # Set up the actor and critic based on the place fields
     if critic is None:
         critic = Agents.Critic(len(place_cells))
@@ -42,6 +44,12 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
     for trial in range(n_trials):
         # Path is visualized using a graphics object
         canvas = Graphics.WallMazeCanvas(environment)
+        if DBG_LVL > 2:
+            n_cells_to_visualize = 4
+            for _ in range(n_cells_to_visualize):
+                sample_cell = random.randint(0, len(place_cells))
+                canvas.visualizePlaceField(place_cells[sample_cell])
+            canvas.visualizeAggregatePlaceFields(place_cells)
 
         # Initialize a new location and adjust for the optimal number of steps
         # needed to get to the goal.

@@ -23,13 +23,17 @@ def testMaze(n_trials, dbg_lvl=1):
     #     (0,0) -----------------
 
     nx = 6
-    ny = 4
-    # maze = Environment.RandomGoalOpenField(nx, ny)
+    ny = 6
+    maze = Environment.RandomGoalOpenField(nx, ny)
 
     # Adding walls and constructing the environment
+    """
+    nx = 6
+    ny = 4
     lp_wall = Environment.Wall((0,2), (2,2))
     rp_wall = Environment.Wall((4,2), (6,2))
     maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall])
+    """
 
     # Maze with walls - 10 x 10 environment
     #           (2,10)   (8,10)
@@ -56,11 +60,17 @@ def testMaze(n_trials, dbg_lvl=1):
 
     n_fields     = round(1.0 * (nx+3) * (ny+3))
     n_cells      = n_fields
+    Hippocampus.N_CELLS_PER_FIELD = 1
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields)
     place_cells  = Hippocampus.assignPlaceCells(n_cells, place_fields)
 
     # Learn the value function
-    ValueLearning.learnValueFunction(n_trials, maze, place_cells, max_steps=1000)
+    amateur_critic = None
+    n_episodes     = 10
+    canvas         = Graphics.MazeCanvas(maze)
+    for _ in range(n_episodes):
+        (_, amateur_critic, _) = ValueLearning.learnValueFunction(n_trials, maze, place_cells, critic=amateur_critic, max_steps=1000)
+        canvas.plotValueFunction(place_cells, amateur_critic)
 
     # Evaluate the theoritical value function for a random policy
     ideal_critic = Agents.IdealValueAgent(maze, place_cells)
@@ -69,5 +79,5 @@ def testMaze(n_trials, dbg_lvl=1):
     Graphics.showImage(optimal_value_function)
 
 if __name__ == "__main__":
-    n_trials = 2
+    n_trials = 100
     testMaze(n_trials, dbg_lvl=0)
