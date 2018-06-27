@@ -7,6 +7,8 @@ import ValueLearning
 import Agents
 import Graphics
 
+import matplotlib.pylab as plt
+
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
 
@@ -66,17 +68,21 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 10
+    n_episodes     = 1
     canvas         = Graphics.MazeCanvas(maze)
-    for _ in range(n_episodes):
+    for episode in range(n_episodes):
         (_, amateur_critic, _) = ValueLearning.learnValueFunction(n_trials, maze, place_cells, critic=amateur_critic, max_steps=1000)
-        canvas.plotValueFunction(place_cells, amateur_critic)
+        canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
+        input('Ended Episode %d'% episode)
+        print()
 
     # Evaluate the theoritical value function for a random policy
     ideal_critic = Agents.IdealValueAgent(maze, place_cells)
     optimal_value_function = ideal_critic.getValueFunction()
 
-    Graphics.showImage(optimal_value_function)
+    scaling_factor = 1.0/(1 - amateur_critic.getDiscountFactor())
+    Graphics.showImage(optimal_value_function, range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
+    input()
 
 if __name__ == "__main__":
     n_trials = 100

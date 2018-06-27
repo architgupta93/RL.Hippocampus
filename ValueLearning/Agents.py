@@ -146,6 +146,9 @@ class Critic(Agent):
         # Weights to map place field activities to value
         self._weights  = self.INITIAL_WEIGHT_VAR * np.random.randn(self._n_fields)
 
+    def getDiscountFactor(self):
+        return self._discount_factor
+
     def updateValue(self, activity, new_activity, reward):
         """
         After taking an action, agent receives a reward and activity changes.
@@ -185,8 +188,8 @@ class IdealValueAgent(Critic):
         self._r_vec = environment.getRewardVector()
 
         # Debug: Plot the transition matrix and the reward vector
-        Graphics.showImage(self._t_mat)
-        Graphics.showImage(np.reshape(self._r_vec, self._dims))
+        Graphics.showImage(self._t_mat, title='State Transition Matrix')
+        Graphics.showImage(np.reshape(self._r_vec, self._dims), title='Reward Structure')
 
     def getValue(self):
         raise NotImplementedError()

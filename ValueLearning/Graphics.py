@@ -25,6 +25,9 @@ class MazeCanvas(object):
         self._max_y    = maze_bounds[3]
         # plt.ion()
 
+        self._v_min    = maze.NON_GOAL_STATE_REWARD
+        self._v_max    = maze.GOAL_STATE_REWARD 
+
     def visualizePlaceField(self, place_cell):
         """
         Show place cell activity for all the positions on the maze for a
@@ -86,7 +89,9 @@ class MazeCanvas(object):
         
         if continuous:
             showSurface(values, xticks=x_locs, yticks=y_locs)
-        showImage(values, xticks=x_locs, yticks=y_locs)
+
+        scaling_factor = 1.0/(1-critic.getDiscountFactor())
+        showImage(values, xticks=x_locs, yticks=y_locs, range=(self._v_min, scaling_factor * self._v_max))
 
 class WallMazeCanvas(MazeCanvas):
     """
@@ -139,12 +144,13 @@ def histogram(data):
     axes.grid(True)
     plt.show()
 
-def showImage(data, xticks=None, yticks=None):
+def showImage(data, xticks=None, yticks=None, range=None, title=None):
     """
     Used to show 2D data using imshow from matplotlib. Issues regarding
     transposition of data, and setting up the correct origin are resolved
     """
 
+    plt.figure()
     data_shape = np.shape(data)
     plt.imshow(data.T, origin='lower')
     # NOTE: LINSPACE in numpy includes the last point, whereas the vanilla
@@ -161,8 +167,14 @@ def showImage(data, xticks=None, yticks=None):
         else:
             plt.yticks(np.linspace(0, data_shape[1]-1, num=len(yticks)), np.round(yticks, 2))
 
+    if range is not None:
+        plt.clim(vmin=range[0], vmax=range[1])
+
+    if title is not None:
+        plt.title(title)
+
     plt.colorbar()
-    plt.show()
+    plt.gcf().show()
 
 def showSurface(data, xticks=None, yticks=None):
     """
@@ -188,4 +200,4 @@ def showSurface(data, xticks=None, yticks=None):
     # Set the format for the axes ticks
     ax.xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-    plt.show()
+    plt.gcf().show()

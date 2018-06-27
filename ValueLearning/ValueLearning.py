@@ -111,7 +111,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
     if (DBG_LVL > 0):
         Graphics.plot(n_steps)
     else:
-        print(np.mean(n_steps), np.std(n_steps))
+        print('Step Statistics - Mean (%.2f), STD (%.2f)' % (np.mean(n_steps), np.std(n_steps)))
 
     return(actor, critic, n_steps)
 
