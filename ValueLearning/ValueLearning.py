@@ -108,6 +108,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
                 Graphics.histogram(critic_weights)
                 """
 
+    n_steps = n_steps * environment.MOVE_DISTANCE
     if (DBG_LVL > 0):
         Graphics.plot(n_steps)
     else:

@@ -140,7 +140,7 @@ class Critic(Agent):
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
         self.INITIAL_WEIGHT_VAR = 0.01
-        self._learning_rate   = 200.0/self._n_fields
+        self._learning_rate   = 100.0/self._n_fields
         self._discount_factor = 0.99
 
         # Weights to map place field activities to value
@@ -184,8 +184,7 @@ class IdealValueAgent(Critic):
 
         # Get the transition matrix for the environment
         self._dims  = environment.getNStates()
-        self._t_mat = environment.getTransitionMatrix()
-        self._r_vec = environment.getRewardVector()
+        (self._r_vec, self._t_mat) = environment.getTransitionMatrix()
 
         # Debug: Plot the transition matrix and the reward vector
         Graphics.showImage(self._t_mat, title='State Transition Matrix')

@@ -78,7 +78,7 @@ class MazeCanvas(object):
             x_locs = np.linspace(self._min_x+1, self._max_x-1, num=nx_pts)
             y_locs = np.linspace(self._min_y+1, self._max_y-1, num=ny_pts)
         else:
-            x_locs = range(self._min_x+1, self._max_x)
+            x_locs = range(self._min_x+1, self._max_x, )
             y_locs = range(self._min_y+1, self._max_y)
 
         # Have never quite understood why Meshgrid works in such a wierd way
@@ -133,17 +133,18 @@ def plot(*args):
     axes.plot(*args)
     # axes.set_xlabel('Trial')
     # axes.set_ylabel('Latency')
-    plt.show()
+    plt.grid()
+    plt.gcf().show()
 
 def histogram(data):
     new_figure = plt.figure()
     axes = new_figure.add_subplot(111)
     axes.set_yscale("log", nonposy='clip')
     axes.hist(data)
-    axes.set_xlabel('Weight')
+    axes.set_xlabel('Bin')
     axes.set_ylabel('Instances')
     axes.grid(True)
-    plt.show()
+    plt.gcf().show()
 
 def showImage(data, xticks=None, yticks=None, range=None, title=None):
     """

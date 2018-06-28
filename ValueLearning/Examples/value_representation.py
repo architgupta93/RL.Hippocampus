@@ -17,7 +17,9 @@ def testMaze(n_train, n_nav):
     nx = 6
     ny = 6
     n_fields = round(1.0 * (nx + 3) * (ny + 3))
-    n_cells  = n_fields
+
+    Hippocampus.N_CELLS_PER_FIELD = 1
+    n_cells  = n_fields * Hippocampus.N_CELLS_PER_FIELD
 
     # Maze creation
     maze    = Environment.RandomGoalOpenField(nx, ny)
@@ -28,7 +30,7 @@ def testMaze(n_train, n_nav):
 
     # Create Actor and Critic
     actor  = Agents.RandomAgent(maze.getActions(), n_cells)
-    critic = Agents.Critic(n_fields)
+    critic = Agents.Critic(n_cells)
 
     ValueLearning.learnValueFunction(n_train, maze, place_cells, actor, critic, max_steps=1000)
 

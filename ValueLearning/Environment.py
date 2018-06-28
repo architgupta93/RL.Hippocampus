@@ -12,7 +12,7 @@ class Maze(object):
     # There can be a reward(s) associated with both the goal and non-goal states.
     GOAL_STATE_REWARD = 0.05
     NON_GOAL_STATE_REWARD = -0.0005
-    MOVE_DISTANCE = 1.0
+    MOVE_DISTANCE = 0.29
 
     def __init__(self, nx, ny):
         # Macro-states for Place field positioning
@@ -41,13 +41,25 @@ class Maze(object):
 
     def getStates(self):
         """
-        Return all possible states
+        Return all possible states for setting up overlaying place fields
         """
 
         all_states = []
         for px in range(-1,self._nx+2):
             for py in range(-1,self._ny+2):
                 all_states.append((px, py))
+        
+        return all_states
+
+    def getMoveStates(self):
+        """
+        Return all possible states that can be moved into
+        """
+
+        all_states = []
+        for px in range(0,self._ux):
+            for py in range(0,self._uy):
+                all_states.append((px * self.MOVE_DISTANCE, py * self.MOVE_DISTANCE))
         
         return all_states
 
@@ -181,6 +193,7 @@ class Maze(object):
         B) assuming all legal transitions from a state are equally likely.
         """
 
+        goal_state_idxs    = []
         n_reachable_states = (self._ux - 1) * (self._uy - 1)
         transition_matrix  = np.zeros((n_reachable_states, n_reachable_states), dtype=float)
         action_selection_prob = 1.0/len(self._action_map)
@@ -188,33 +201,24 @@ class Maze(object):
             for st_y in range(1, self._uy):
                 self._state         = (st_x * self.MOVE_DISTANCE, st_y * self.MOVE_DISTANCE)
                 current_state_idx   = ((self._uy - 1) * (st_x-1)) + (st_y-1)
+                if self.reachedGoalState():
+                    goal_state_idxs.append(current_state_idx)
                 for action in self._action_map:
-                    translation     = self.convertActionToTranslation(action)
-                    new_state_idx   = round((self._uy - 1) * (st_x + translation[0] - 1)) + round(st_y + translation[1] - 1)
+                    analog_tr       = self.convertActionToTranslation(action)
+                    translation     = (round(analog_tr[0]/ self.MOVE_DISTANCE), round(analog_tr[1]/self.MOVE_DISTANCE))
+                    new_state_idx   = (self._uy - 1) * (st_x + translation[0] - 1) + (st_y + translation[1] - 1)
                     transition_matrix[current_state_idx, new_state_idx] += action_selection_prob
 
         # For the goal state, none of this applies, you basically stay in the
-        # goal state forever
-        for goal in self._goal_locations:
-            goal_state_idx = ((round(goal[0]/self.MOVE_DISTANCE)-1) * (self._uy - 1)) + (round(goal[1]/self.MOVE_DISTANCE)-1)
-            transition_matrix[goal_state_idx, :] = 0.0
-            transition_matrix[goal_state_idx, goal_state_idx] = 1.0
-
-        return transition_matrix
-
-    def getRewardVector(self):
-        """
-        In the open field, every location has a small negative reward (for
-        taking 1 step to get there). Goal location(s) have a large positive
-        reward to compensate for the path taken to get there.
-        """
-
-        n_reachable_states = (self._ux - 1) * (self._uy - 1)
+        # goal state forever. In case of smaller move distances than the matrix
+        # size, there would be multiple goal lications
         reward_vec = self.NON_GOAL_STATE_REWARD * np.ones((n_reachable_states,1), dtype=float)
+        for goal in goal_state_idxs:
+            transition_matrix[goal, :] = 0.0
+            transition_matrix[goal, goal] = 1.0
+            reward_vec[goal] = self.GOAL_STATE_REWARD
 
-        for goal in self._goal_locations:
-            reward_vec[((round(goal[0]/self.MOVE_DISTANCE)-1) * (self._uy - 1)) + (round(goal[1]/self.MOVE_DISTANCE)-1)] = self.GOAL_STATE_REWARD
-        return reward_vec
+        return (reward_vec, transition_matrix)
 
     def reachedGoalState(self):
         raise NotImplementedError()

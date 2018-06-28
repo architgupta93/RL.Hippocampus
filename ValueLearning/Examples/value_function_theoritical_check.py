@@ -61,15 +61,14 @@ def testMaze(n_trials, dbg_lvl=1):
     """
 
     n_fields     = round(1.0 * (nx+3) * (ny+3))
-    n_cells      = n_fields
     Hippocampus.N_CELLS_PER_FIELD = 1
+    n_cells      = n_fields * Hippocampus.N_CELLS_PER_FIELD
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields)
     place_cells  = Hippocampus.assignPlaceCells(n_cells, place_fields)
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 100
-    training_eps   = round(n_episodes/2)
+    n_episodes     = 1
     canvas         = Graphics.MazeCanvas(maze)
     weights        = np.empty((n_cells, n_episodes), dtype=float)
     for episode in range(n_episodes):
@@ -81,6 +80,7 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Draw the final value funciton
     canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
+    # canvas.plotValueFunction(place_cells, amateur_critic)
 
     """ DEBUG
     print(components.explained_variance_ratio_)
@@ -94,9 +94,10 @@ def testMaze(n_trials, dbg_lvl=1):
     optimal_value_function = ideal_critic.getValueFunction()
 
     scaling_factor = 1.0/(1 - amateur_critic.getDiscountFactor())
-    Graphics.showImage(optimal_value_function, range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
+    # Graphics.showImage(optimal_value_function, range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
+    Graphics.showImage(optimal_value_function)
     input('Press any key to Exit!')
 
 if __name__ == "__main__":
-    n_trials = 1
+    n_trials = 10
     testMaze(n_trials, dbg_lvl=0)
