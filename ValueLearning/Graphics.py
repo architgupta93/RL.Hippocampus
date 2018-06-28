@@ -6,7 +6,7 @@ from MotionAnimation.PY import data_types as GR
 from sklearn.decomposition import PCA
 import numpy as np
 
-MAX_TICKS_TO_SHOW = 10
+MAX_TICKS_TO_SHOW = 5
 class MazeCanvas(object):
     """
     Used for visualizing the current view of the state space, as well as the
@@ -70,7 +70,7 @@ class MazeCanvas(object):
     def animateTrajectory(self):
         self._anim_obj.plotTimedTR(object_type='point')
     
-    def plotValueFunction(self, place_cells, critic, continuous=False):
+    def plotValueFunction(self, place_cells, critic, continuous=False, limits=True):
         if continuous:
             # Scale the number of data points in each dimension independently
             nx_pts = round(20 * (self._max_x - self._min_x - 2))
@@ -92,7 +92,11 @@ class MazeCanvas(object):
             showSurface(values, xticks=x_locs, yticks=y_locs)
 
         scaling_factor = 1.0/(1-critic.getDiscountFactor())
-        showImage(values, xticks=x_locs, yticks=y_locs, range=(self._v_min, scaling_factor * self._v_max))
+        if limits:
+            showImage(values, xticks=x_locs, yticks=y_locs, range=(self._v_min, scaling_factor * self._v_max))
+        else:
+            # Let the image be colored according to its own scale
+            showImage(values, xticks=x_locs, yticks=y_locs)
 
 class WallMazeCanvas(MazeCanvas):
     """

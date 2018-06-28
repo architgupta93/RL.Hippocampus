@@ -140,7 +140,7 @@ class Critic(Agent):
         # Learning parameters, including the proportionality constant with
         # which weights are scaled for the critic
         self.INITIAL_WEIGHT_VAR = 0.01
-        self._learning_rate   = learning_rate_scaling * 100.0/self._n_fields
+        self._learning_rate   = learning_rate_scaling * 250.0/self._n_fields
         self._discount_factor = 0.99
 
         # Weights to map place field activities to value
@@ -187,8 +187,11 @@ class IdealValueAgent(Critic):
         (self._r_vec, self._t_mat) = environment.getTransitionMatrix()
 
         # Debug: Plot the transition matrix and the reward vector
+        environment_bounds = environment.getBounds()
         Graphics.showImage(self._t_mat, title='State Transition Matrix')
-        Graphics.showImage(np.reshape(self._r_vec, self._dims), xticks=range(1,self._dims[0]+1), yticks=range(1,self._dims[1]+1), title='Reward Structure')
+        Graphics.showImage(np.reshape(self._r_vec, self._dims), \
+            xticks=range(environment_bounds[0]+1, environment_bounds[2]), \
+            yticks=range(environment_bounds[1]+1, environment_bounds[3]), title='Reward Structure')
 
     def getValue(self):
         raise NotImplementedError()

@@ -29,7 +29,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
     # Visualize place fields for a few cells and then the aggregate activity
     # Set up the actor and critic based on the place fields
     if critic is None:
-        critic = Agents.Critic(len(place_cells), learning_rate_scaling=1.0/environment.MOVE_DISTANCE)
+        critic = Agents.Critic(len(place_cells), learning_rate_scaling=1.0/pow(environment.MOVE_DISTANCE,2))
     else:
         assert(critic.getNFields() == len(place_cells))
 

@@ -11,7 +11,7 @@ import numpy as np
 
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
-    move_distance = 0.29
+    move_distance = 0.89
 
     # Open field - Rather boring
     # maze         = Environment.RandomGoalOpenField(nx, ny)
@@ -69,7 +69,7 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 1
+    n_episodes     = 5
     canvas         = Graphics.MazeCanvas(maze)
     weights        = np.empty((n_cells, n_episodes), dtype=float)
     for episode in range(n_episodes):
@@ -80,7 +80,7 @@ def testMaze(n_trials, dbg_lvl=1):
         # input()
 
     # Draw the final value funciton
-    canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
+    canvas.plotValueFunction(place_cells, amateur_critic, continuous=True, limits=False)
     # canvas.plotValueFunction(place_cells, amateur_critic)
 
     """ DEBUG
@@ -95,9 +95,10 @@ def testMaze(n_trials, dbg_lvl=1):
     optimal_value_function = ideal_critic.getValueFunction()
 
     scaling_factor = 1.0/(1 - amateur_critic.getDiscountFactor())
+    # Graphics.showImage(optimal_value_function, xticks=range(1,nx), yticks=range(1,ny), range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
     Graphics.showImage(optimal_value_function, xticks=range(1,nx), yticks=range(1,ny), range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
     input('Press any key to Exit!')
 
 if __name__ == "__main__":
     n_trials = 200
-    testMaze(n_trials, dbg_lvl=1)
+    testMaze(n_trials, dbg_lvl=0)
