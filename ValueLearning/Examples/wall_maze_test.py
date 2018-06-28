@@ -17,7 +17,22 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     ny = 10
 
     # Build the Maze (add walls etc.)
-    # Design of the task
+    # Maze with partition - 6 x 6 environment
+    #           ----------------- (6,6)
+    #           |               |
+    #           | (2,3)   (4,3) |
+    #           |-----     -----| (6,3)
+    #           |               |
+    #           |               |
+    #     (0,0) -----------------
+
+    nx = 6
+    ny = 6
+    lp_wall = Environment.Wall((0,3), (2,3))
+    rp_wall = Environment.Wall((4,3), (6,3))
+    maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall])
+
+    # 10 x 10 Maze with an L barrier
     #           (2,10)
     #       --------------------- (10,10)
     #       |    |              |
@@ -29,10 +44,11 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     #       |     (2,2)         |
     # (0,0) ---------------------
 
-    # Adding two walls (horizontal and vertical)
+    """
     h_wall = Environment.Wall((2,4), (4,4))
     v_wall = Environment.Wall((2,2), (2,10))
     maze   = Environment.MazeWithWalls(nx, ny, [h_wall, v_wall])
+    """
 
     # Create a initial and goal location including the information about wall locations
 

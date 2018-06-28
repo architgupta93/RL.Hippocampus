@@ -11,29 +11,30 @@ import numpy as np
 
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
+    move_distance = 0.29
 
     # Open field - Rather boring
     # maze         = Environment.RandomGoalOpenField(nx, ny)
 
-    # Maze with partition - 6 x 4 environment
-    #           ----------------- (6,4)
+    # Maze with partition - 6 x 6 environment
+    #           ----------------- (6,6)
     #           |               |
-    #           | (2,2)   (4,2) |
-    #           |-----     -----| (6,2)
+    #           | (2,3)   (4,3) |
+    #           |-----     -----| (6,3)
     #           |               |
     #           |               |
     #     (0,0) -----------------
 
     nx = 6
     ny = 6
-    maze = Environment.RandomGoalOpenField(nx, ny)
+    maze = Environment.RandomGoalOpenField(nx, ny, move_distance)
 
     # Adding walls and constructing the environment
     """
     nx = 6
-    ny = 4
-    lp_wall = Environment.Wall((0,2), (2,2))
-    rp_wall = Environment.Wall((4,2), (6,2))
+    ny = 6
+    lp_wall = Environment.Wall((0,3), (2,3))
+    rp_wall = Environment.Wall((4,3), (6,3))
     maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall])
     """
 
@@ -94,10 +95,9 @@ def testMaze(n_trials, dbg_lvl=1):
     optimal_value_function = ideal_critic.getValueFunction()
 
     scaling_factor = 1.0/(1 - amateur_critic.getDiscountFactor())
-    # Graphics.showImage(optimal_value_function, range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
-    Graphics.showImage(optimal_value_function)
+    Graphics.showImage(optimal_value_function, xticks=range(1,nx), yticks=range(1,ny), range=(maze.NON_GOAL_STATE_REWARD, scaling_factor * maze.GOAL_STATE_REWARD))
     input('Press any key to Exit!')
 
 if __name__ == "__main__":
-    n_trials = 10
-    testMaze(n_trials, dbg_lvl=0)
+    n_trials = 200
+    testMaze(n_trials, dbg_lvl=1)

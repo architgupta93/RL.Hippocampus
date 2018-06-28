@@ -4,6 +4,8 @@ import random
 # Graphics
 import matplotlib.pyplot as plt
 
+DEFAULT_MOVE_DISTANCE = 1.0
+
 class Maze(object):
     """
     Defines a rectangular maze for a navigation task
@@ -12,13 +14,15 @@ class Maze(object):
     # There can be a reward(s) associated with both the goal and non-goal states.
     GOAL_STATE_REWARD = 0.05
     NON_GOAL_STATE_REWARD = -0.0005
-    MOVE_DISTANCE = 0.29
 
-    def __init__(self, nx, ny):
+    def __init__(self, nx, ny, move_distance=None):
         # Macro-states for Place field positioning
         self._nx = nx
         self._ny = ny
         self._n_states = (2+self._nx) * (2+self._ny)
+        self.MOVE_DISTANCE = DEFAULT_MOVE_DISTANCE
+        if move_distance is not None:
+            self.MOVE_DISTANCE = move_distance
 
         # Micro-states for traversal
         self._ux = round(nx/self.MOVE_DISTANCE)
@@ -227,9 +231,9 @@ class Maze(object):
         raise NotImplementedError()
 
 class RandomGoalOpenField(Maze):
-    def __init__(self, nx, ny):
+    def __init__(self, nx, ny, move_distance=None):
         # Call the parent class constructor
-        super(RandomGoalOpenField, self).__init__(nx, ny)
+        super(RandomGoalOpenField, self).__init__(nx, ny, move_distance)
         self.setup()
         return
 
@@ -315,9 +319,9 @@ class MazeWithWalls(Maze):
     debugging was becoming increasingly difficult. Having a more difficult
     task would be a better way to assess what is going on.
     """
-    def __init__(self, nx, ny, walls=[]):
+    def __init__(self, nx, ny, walls=[], move_distance=None):
         # Class constructor
-        super(MazeWithWalls, self).__init__(nx, ny)
+        super(MazeWithWalls, self).__init__(nx, ny, move_distance)
 
         # Add walls corresponding to boundaries
         l_wall = Wall((0,0), (0,ny))    # Left
