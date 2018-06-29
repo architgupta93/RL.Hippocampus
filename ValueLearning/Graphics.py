@@ -194,6 +194,7 @@ def showSurface(data, xticks=None, yticks=None):
 
     if yticks is not None:
         yticks = range(data_shape[1])
+
     Y, X = np.meshgrid(yticks, xticks)
 
     # 3D Figure, needs some effort
@@ -238,12 +239,13 @@ def showDecomposition(values, components=None, title=None):
         singular_values = components[1]
 
     # Components
-    major_component = components[0][:,0]
-    minor_component = components[0][:,1]
+    major_component = components[0][:,0]/np.linalg.norm(components[0][:,0])
+    minor_component = components[0][:,1]/np.linalg.norm(components[0][:,1])
+    vector_norms    = np.linalg.norm(values, axis=0)
 
     # Get the decomposition of the weight vectors into the constituents 
     n_samples = np.shape(values)[1]
-    transformed_values = [np.dot(major_component, values), np.dot(minor_component, values)]
+    transformed_values = [np.dot(major_component, values)/vector_norms, np.dot(minor_component, values)/vector_norms]
     plt.figure()
     plt.scatter(transformed_values[0], transformed_values[1], c=range(n_samples), \
         cmap='viridis', marker='d', alpha=0.9)

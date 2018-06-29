@@ -171,6 +171,7 @@ class Maze(object):
     def redrawGoalLocation(self):
         # Have a single, random goal location inside the maze
         self._goal_locations = [self._getValidLocation()]
+        # self._goal_locations = [(1, 2)]
 
         # Print the goal location
         goal_location = self._goal_locations[0]
@@ -211,6 +212,9 @@ class Maze(object):
                     analog_tr       = self.convertActionToTranslation(action)
                     translation     = (round(analog_tr[0]/ self.MOVE_DISTANCE), round(analog_tr[1]/self.MOVE_DISTANCE))
                     new_state_idx   = (self._uy - 1) * (st_x + translation[0] - 1) + (st_y + translation[1] - 1)
+                    if new_state_idx >= n_reachable_states:
+                        # Don't know what else to do about this - It is tricky!
+                        new_state_idx = current_state_idx
                     transition_matrix[current_state_idx, new_state_idx] += action_selection_prob
 
         # For the goal state, none of this applies, you basically stay in the

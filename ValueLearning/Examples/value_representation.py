@@ -12,6 +12,7 @@ import random
 
 def testMaze(n_train, n_nav):
     ValueLearning.DBG_LVL = 1
+    move_distance = 0.99
 
     # Experiment parameters
     nx = 6
@@ -22,7 +23,7 @@ def testMaze(n_train, n_nav):
     n_cells  = n_fields * Hippocampus.N_CELLS_PER_FIELD
 
     # Maze creation
-    maze    = Environment.RandomGoalOpenField(nx, ny)
+    maze    = Environment.RandomGoalOpenField(nx, ny, move_distance)
 
     # Generate place fields and place cells
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields)

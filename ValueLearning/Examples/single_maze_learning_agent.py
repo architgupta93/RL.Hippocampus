@@ -7,13 +7,15 @@ import Graphics
 import time
 import threading
 import numpy as np
-import matplotlib.pyplot as pl
+import matplotlib.pylab as pl
 
 def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     ValueLearning.DBG_LVL = learning_dbg_lvl
     # Create a Maze for the experiment
-    nx = 10
-    ny = 10
+    nx = 6
+    ny = 6
+
+    move_distance = 0.29
 
     # Every location has an associated place field
     # TODO: Play around with having more/fewer place fields!
@@ -22,11 +24,11 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     # Instead of having multiple cells per field, here we can get away with
     # having fewer place fields than the number of locations on the map (which
     # makes sense which the fields are smeared across the space).
-    # n_cells  = n_fields* Hippocampus.N_CELLS_PER_FIELD
-    n_cells  = n_fields
+    Hippocampus.N_CELLS_PER_FIELD = 4
+    n_cells  = n_fields * Hippocampus.N_CELLS_PER_FIELD
 
     # Build the maze
-    maze  = Environment.RandomGoalOpenField(nx, ny)
+    maze  = Environment.RandomGoalOpenField(nx, ny, move_distance)
     canvas = Graphics.MazeCanvas(maze)
 
     # Generate a set of place fields for the environment
@@ -56,11 +58,12 @@ class MazeThread(threading.Thread):
         print("Starting Thread: ", self._thread_id)
         (self.training_steps, self.navigation_steps)  = testMaze(self._n_train, self._n_nav)
         print("Exiting Thread:", self._thread_id)
+        return
 
 if __name__ == "__main__":
     # For reasonable data
     n_epochs = 1
-    n_training_trials = 40 # Training trials
+    n_training_trials = 100 # Training trials
     n_navigation_trials = 20  # Navigation trials
 
     # For quick trials

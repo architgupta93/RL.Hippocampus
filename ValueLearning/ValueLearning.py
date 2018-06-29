@@ -29,13 +29,13 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
     # Visualize place fields for a few cells and then the aggregate activity
     # Set up the actor and critic based on the place fields
     if critic is None:
-        critic = Agents.Critic(len(place_cells), learning_rate_scaling=1.0/pow(environment.MOVE_DISTANCE,2))
+        critic = Agents.Critic(len(place_cells))
     else:
         assert(critic.getNFields() == len(place_cells))
 
     if actor is None:
-        # actor = Agents.Actor(environment.getActions(), len(place_cells)) 
-        actor = Agents.RandomAgent(environment.getActions(), len(place_cells)) 
+        actor = Agents.Actor(environment.getActions(), len(place_cells)) 
+        # actor = Agents.RandomAgent(environment.getActions(), len(place_cells)) 
         # actor = Agents.IdealActor(environment, critic, place_cells)
     else:
         assert(actor.getNFields() == len(place_cells))
@@ -100,7 +100,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
                 canvas.plotTrajectory()
 
                 # This takes extremely long when using a population of neurons
-                canvas.plotValueFunction(place_cells, critic)
+                canvas.plotValueFunction(place_cells, critic, limits=False, continuous=True)
         
                 # Plot a histogram of the weightS
                 """

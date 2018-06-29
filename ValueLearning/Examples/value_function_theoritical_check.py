@@ -11,7 +11,7 @@ import numpy as np
 
 def testMaze(n_trials, dbg_lvl=1):
     ValueLearning.DBG_LVL = dbg_lvl
-    move_distance = 0.89
+    move_distance = 0.29
 
     # Open field - Rather boring
     # maze         = Environment.RandomGoalOpenField(nx, ny)
@@ -25,18 +25,20 @@ def testMaze(n_trials, dbg_lvl=1):
     #           |               |
     #     (0,0) -----------------
 
+    """
     nx = 6
     ny = 6
     maze = Environment.RandomGoalOpenField(nx, ny, move_distance)
+    use_limits = True
+    """
 
     # Adding walls and constructing the environment
-    """
     nx = 6
     ny = 6
     lp_wall = Environment.Wall((0,3), (2,3))
     rp_wall = Environment.Wall((4,3), (6,3))
-    maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall])
-    """
+    maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall], move_distance)
+    use_limits = False
 
     # Maze with walls - 10 x 10 environment
     #           (2,10)   (8,10)
@@ -69,18 +71,19 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 5
+    n_episodes     = 10
     canvas         = Graphics.MazeCanvas(maze)
     weights        = np.empty((n_cells, n_episodes), dtype=float)
     for episode in range(n_episodes):
         (_, amateur_critic, _) = ValueLearning.learnValueFunction(n_trials, maze, place_cells, critic=amateur_critic, max_steps=1000)
         weights[:, episode]    = amateur_critic.getWeights()
-        # canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
         print('Ended Episode %d'% episode)
+
+        # canvas.plotValueFunction(place_cells, amateur_critic, continuous=True)
         # input()
 
     # Draw the final value funciton
-    canvas.plotValueFunction(place_cells, amateur_critic, continuous=True, limits=False)
+    canvas.plotValueFunction(place_cells, amateur_critic, continuous=True, limits=use_limits)
     # canvas.plotValueFunction(place_cells, amateur_critic)
 
     """ DEBUG
@@ -100,5 +103,5 @@ def testMaze(n_trials, dbg_lvl=1):
     input('Press any key to Exit!')
 
 if __name__ == "__main__":
-    n_trials = 200
+    n_trials = 100
     testMaze(n_trials, dbg_lvl=0)
