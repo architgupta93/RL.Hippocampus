@@ -9,13 +9,11 @@ import threading
 import numpy as np
 import matplotlib.pylab as pl
 
-def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
+def testMaze(nT, nN, learning_dbg_lvl=0, navigation_dbg_lvl=0):
     ValueLearning.DBG_LVL = learning_dbg_lvl
+    move_distance = 0.29
 
     # Parameters describing the maze
-    nx = 10
-    ny = 10
-
     # Build the Maze (add walls etc.)
     # Maze with partition - 6 x 6 environment
     #           ----------------- (6,6)
@@ -30,7 +28,7 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     ny = 6
     lp_wall = Environment.Wall((0,3), (2,3))
     rp_wall = Environment.Wall((4,3), (6,3))
-    maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall])
+    maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall], move_distance)
 
     # 10 x 10 Maze with an L barrier
     #           (2,10)
@@ -45,6 +43,9 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     # (0,0) ---------------------
 
     """
+    nx = 10
+    ny = 10
+
     h_wall = Environment.Wall((2,4), (4,4))
     v_wall = Environment.Wall((2,2), (2,10))
     maze   = Environment.MazeWithWalls(nx, ny, [h_wall, v_wall])
@@ -56,8 +57,9 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     canvas = Graphics.WallMazeCanvas(maze)
 
     # Add Place fields and place cells
-    n_fields = round(1.0 * nx * ny)
-    n_cells  = n_fields
+    n_fields = round(1.0 * (nx + 3) * (ny + 3))
+    Hippocampus.N_CELLS_PER_FIELD = 4
+    n_cells  = n_fields * Hippocampus.N_CELLS_PER_FIELD
 
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields)
     place_cells  = Hippocampus.assignPlaceCells(n_cells, place_fields)
@@ -66,11 +68,11 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
         canvas.visualizePlaceFields(place_cells)
 
     # Learn how to navigate this Environment
-    (actor, critic, learning_steps) = ValueLearning.learnValueFunction(nT, maze, place_cells, max_steps=2000)
+    (actor, critic, learning_steps) = ValueLearning.learnValueFunction(nT, maze, place_cells, max_steps=4000)
 
     # Try a single trial on the same Maze and see how we do
     ValueLearning.DBG_LVL = navigation_dbg_lvl
-    navigation_steps = ValueLearning.navigate(nN, maze, place_cells, actor, critic, max_steps=200)
+    navigation_steps = ValueLearning.navigate(nN, maze, place_cells, actor, critic, max_steps=400)
     return (learning_steps, navigation_steps)
 
 class MazeThread(threading.Thread):
@@ -90,8 +92,8 @@ class MazeThread(threading.Thread):
         print("Exiting Thread:", self._thread_id)
 
 if __name__ == "__main__":
-    n_epochs = 1
-    n_training_trials = 40 # Training trials
+    n_epochs = 20
+    n_training_trials = 50 # Training trials
     n_navigation_trials = 20  # Navigation trials
 
     threads = [None] * n_epochs
@@ -105,5 +107,32 @@ if __name__ == "__main__":
     # Wait for all threads to complete
     for t in threads:
         t.join()
+
+    for epoch in range(n_epochs):
+        training_steps[:, epoch] = threads[epoch].training_steps
+        navigation_steps[:, epoch] = threads[epoch].navigation_steps
+
+    mean_training_steps   = np.reshape(np.mean(training_steps, axis=1), (n_training_trials, 1))
+    mean_navigation_steps = np.reshape(np.mean(navigation_steps, axis=1), (n_navigation_trials, 1))
+
+    # For plotting the standard deviation, use this!
+    err_training_steps = np.std(training_steps, axis=1)
+    err_navigation_steps = np.std(navigation_steps, axis=1)
+
+    training_fig = pl.figure()
+    training_ax = training_fig.add_subplot(111)
+    training_ax.errorbar(range(n_training_trials), mean_training_steps, yerr=err_training_steps, marker='d', ecolor='black', capsize=0.5)
+    training_ax.set_xlabel('Trials')
+    training_ax.set_ylabel('Latency')
+    training_ax.grid(True)
+    pl.show()
+
+    navigation_fig = pl.figure()
+    navigation_ax = navigation_fig.add_subplot(111)
+    navigation_ax.errorbar(range(n_navigation_trials), mean_navigation_steps, yerr=err_navigation_steps, marker='o', ecolor='black', capsize=0.5)
+    navigation_ax.set_xlabel('Trials')
+    navigation_ax.set_ylabel('Latency')
+    navigation_ax.grid(True)
+    pl.show()
 
     print('Execution complete. Exiting!')

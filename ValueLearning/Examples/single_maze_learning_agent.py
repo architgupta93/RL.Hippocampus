@@ -9,7 +9,7 @@ import threading
 import numpy as np
 import matplotlib.pylab as pl
 
-def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
+def testMaze(nT, nN, learning_dbg_lvl=0, navigation_dbg_lvl=2):
     ValueLearning.DBG_LVL = learning_dbg_lvl
     # Create a Maze for the experiment
     nx = 6
@@ -29,7 +29,7 @@ def testMaze(nT, nN, learning_dbg_lvl=1, navigation_dbg_lvl=0):
 
     # Build the maze
     maze  = Environment.RandomGoalOpenField(nx, ny, move_distance)
-    canvas = Graphics.MazeCanvas(maze)
+    canvas = Graphics.WallMazeCanvas(maze)
 
     # Generate a set of place fields for the environment
     place_fields = Hippocampus.setupPlaceFields(maze, n_fields) 

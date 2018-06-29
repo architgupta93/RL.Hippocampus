@@ -40,7 +40,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
     else:
         assert(actor.getNFields() == len(place_cells))
 
-    n_steps  = np.zeros(n_trials, dtype=int)
+    n_steps  = np.zeros(n_trials, dtype=float)
     for trial in range(n_trials):
         # Path is visualized using a graphics object
         canvas = Graphics.WallMazeCanvas(environment)
@@ -54,7 +54,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
         # Initialize a new location and adjust for the optimal number of steps
         # needed to get to the goal.
         environment.redrawInitLocation()
-        optimal_steps_to_goal = environment.getOptimalStepsToGoal()
+        optimal_steps_to_goal = environment.getOptimalDistanceToGoal()
         n_steps[trial] = -optimal_steps_to_goal
 
         initial_state = environment.getCurrentState()
@@ -62,10 +62,10 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
         terminate_trial = False
         while not terminate_trial:
             terminate_trial = environment.reachedGoalState()
-            if (n_steps[trial] > max_steps):
+            if (n_steps[trial] > max_steps * environment.MOVE_DISTANCE):
                 break
 
-            n_steps[trial] += 1
+            n_steps[trial] += environment.MOVE_DISTANCE
             current_state = environment.getCurrentState()
             if DBG_LVL > 1:
                 print('On state: (%.2f, %.2f)' % (current_state[0], current_state[1]))
@@ -91,7 +91,7 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
             actor.updateWeights(pf_activity, prediction_error)
 
         if (DBG_LVL > 0):
-            print('Ended trial %d in %d steps.' % (trial, n_steps[trial]))
+            print('Ended trial %d moving %.1f.' % (trial, n_steps[trial]))
             # At debug level 1, only the first and the last trajectories, and
             # corresponding value functions are shown. At higher debug levels,
             # the entire trajectory is shown for every iteration
@@ -108,7 +108,6 @@ def learnValueFunction(n_trials, environment, place_cells, actor=None, critic=No
                 Graphics.histogram(critic_weights)
                 """
 
-    n_steps = n_steps * environment.MOVE_DISTANCE
     if (DBG_LVL > 0):
         Graphics.plot(n_steps)
     else:

@@ -231,7 +231,7 @@ class Maze(object):
     def reachedGoalState(self):
         raise NotImplementedError()
 
-    def getOptimalStepsToGoal(self):
+    def getOptimalDistanceToGoal(self):
         raise NotImplementedError()
 
 class RandomGoalOpenField(Maze):
@@ -250,10 +250,10 @@ class RandomGoalOpenField(Maze):
         goal_location = self._goal_locations[0]
         return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
 
-    def getOptimalStepsToGoal(self):
+    def getOptimalDistanceToGoal(self):
         goal_location = self._goal_locations[0]
         init_location = self._init_locations[0]
-        return np.round((abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))/self.MOVE_DISTANCE)
+        return float(abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))
 
 class Wall(object):
     """
@@ -384,7 +384,11 @@ class MazeWithWalls(Maze):
         goal_location = self._goal_locations[0]
         return ((pow(self._state[0] - goal_location[0], 2) + pow(self._state[1] - goal_location[1], 2) < pow(self._goal_th, 2)))
 
-    def getOptimalStepsToGoal(self):
+    def getOptimalDistanceToGoal(self):
         # TODO: Will have to implement BFS here to find the optimal number of
         # steps, not sure if it is work it :(
-        return 0
+
+        # NOTE: For the time being, we will just use this (INCORRECT) implementation
+        goal_location = self._goal_locations[0]
+        init_location = self._init_locations[0]
+        return float(abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))

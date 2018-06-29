@@ -47,7 +47,8 @@ class Actor(Agent):
         self._actions = actions
         self._n_actions = len(actions)
         self._last_selected_action = None
-        self._weight_scaling = 0.01
+        self._weight_scaling = 200.0/n_fields
+        self.INITIAL_WEIGHT_VAR = 0.01
         self._weights   = self.INITIAL_WEIGHT_VAR * np.random.randn(self._n_actions, self._n_fields)
 
         # UPDATE: Instead of relying only on the current activity input, we are
@@ -61,7 +62,7 @@ class Actor(Agent):
         # UPDATE: The action that was previously chosen (say E) gets a bump in
         # its probability mimicking a 'momentum' term. It just captures the
         # fact that animals probably like to keep going in one direction.
-        self._momentum_factor = 2.0
+        self._momentum_factor = 1.1
     
     def getAction(self, activity):
         # Experimenting with other monotonic functions
@@ -76,7 +77,7 @@ class Actor(Agent):
         self._previous_activity = scaled_activity
         """
 
-        action_weights  = np.exp(scaled_activity)
+        action_weights  = np.exp(2.0 * scaled_activity)
 
         # Method: 02 - This should happen after the numbers have been converted
         # to probabilities (otherwise negative numbers become even more
