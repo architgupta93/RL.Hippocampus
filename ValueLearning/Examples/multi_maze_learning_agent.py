@@ -56,13 +56,13 @@ def testMaze(n_training_trials, n_navigation_trials):
         # First look at the performance of the agent in the task before it is
         # allowed to learn anything. Then allow learning
 
-        print('Learning Environment B')
-        (actor, critic, steps_E2) = ValueLearning.learnValueFunction(n_training_trials, env_E2, place_cells_E2, actor, critic, max_train_steps)
-        learning_steps_E2 = steps_E2
-
         print('Learning Environment A')
         (actor, critic, steps_E1) = ValueLearning.learnValueFunction(n_training_trials, env_E1, place_cells_E1, actor, critic, max_train_steps)
         learning_steps_E1 = steps_E1
+
+        print('Learning Environment B')
+        (actor, critic, steps_E2) = ValueLearning.learnValueFunction(n_training_trials, env_E2, place_cells_E2, actor, critic, max_train_steps)
+        learning_steps_E2 = steps_E2
 
     # canvas_E1.plotValueFunction(place_cells_E1, critic)
     # canvas_E2.plotValueFunction(place_cells_E2, critic)
@@ -107,8 +107,8 @@ class MazeThread(threading.Thread):
         return
 
 if __name__ == "__main__":
-    n_epochs = 10
-    n_training_trials = 50 # Training trials
+    n_epochs = 20
+    n_training_trials = 100 # Training trials
     n_navigation_trials = 20  # Navigation trials
 
     threads = [None] * n_epochs
