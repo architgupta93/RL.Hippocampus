@@ -11,7 +11,9 @@ import numpy as np
 import matplotlib.pyplot as pl
 from pprint import pprint
 
-def testMaze(nT, nN, learning_dbg_lvl=0, navigation_dbg_lvl=0):
+def testMaze(n_steps, learning_dbg_lvl=0, navigation_dbg_lvl=0):
+    nT = n_steps[0] # Training steps
+    nN = n_steps[1] # Navigation steps
     ValueLearning.DBG_LVL = learning_dbg_lvl
     # Create a Maze for the experiment
     nx = 6
@@ -84,10 +86,12 @@ if __name__ == "__main__":
     n_navigation_trials = 20  # Navigation trials
     """
 
-    threads = [None] * n_epochs
-
     training_steps = np.zeros((n_training_trials, n_epochs), dtype=float)
     navigation_steps = np.zeros((n_navigation_trials, n_epochs), dtype=float)
+
+    """
+    # This version uses threads, which are quite slow in python because of GIL
+    threads = [None] * n_epochs
     for epoch in range(n_epochs):
         threads[epoch] = MazeThread(epoch, n_training_trials, n_navigation_trials)
         threads[epoch].start()
@@ -97,12 +101,15 @@ if __name__ == "__main__":
         t.join()
 
     for epoch in range(n_epochs):
-        pprint(threads[epoch].training_steps)
         training_steps[:, epoch] = threads[epoch].training_steps
         navigation_steps[:, epoch] = threads[epoch].navigation_steps
+    """
 
-    # for t in threads:
-    #     t.terminate()
+    threads = multiprocessing.Pool(n_epochs)
+    training_results = threads.map(testMaze, [(n_training_trials, n_navigation_trials) for x in range(n_epochs)])
+    for epoch in range(n_epochs):
+        training_steps[:, epoch] = training_results[epoch][0]
+        navigation_steps[:, epoch] = training_results[epoch][1]
 
     mean_training_steps   = np.reshape(np.mean(training_steps, axis=1), (n_training_trials, 1))
     mean_navigation_steps = np.reshape(np.mean(navigation_steps, axis=1), (n_navigation_trials, 1))
@@ -123,8 +130,8 @@ if __name__ == "__main__":
     err_navigation_steps = np.std(navigation_steps, axis=1)
 
     # Print all the data before plotting
-    print('%d Training trials'%n_training_trials)
-    pprint(mean_training_steps)
+    # print('%d Training trials'%n_training_trials)
+    # pprint(mean_training_steps)
 
     training_fig = pl.figure()
     training_ax = training_fig.add_subplot(111)
@@ -134,8 +141,8 @@ if __name__ == "__main__":
     training_ax.grid(True)
     pl.show()
 
-    print('%d Navigation trials'%n_navigation_trials)
-    pprint(mean_navigation_steps)
+    # print('%d Navigation trials'%n_navigation_trials)
+    # pprint(mean_navigation_steps)
 
     navigation_fig = pl.figure()
     navigation_ax = navigation_fig.add_subplot(111)
