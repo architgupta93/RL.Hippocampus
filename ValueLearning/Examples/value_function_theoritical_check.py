@@ -33,12 +33,14 @@ def testMaze(n_trials, dbg_lvl=1):
     """
 
     # Adding walls and constructing the environment
+    """
     nx = 6
     ny = 6
     lp_wall = Environment.Wall((0,3), (2,3))
     rp_wall = Environment.Wall((4,3), (6,3))
     maze    = Environment.MazeWithWalls(nx, ny, [lp_wall, rp_wall], move_distance)
     use_limits = False
+    """
 
     # Maze with walls - 10 x 10 environment
     #           (2,10)   (8,10)
@@ -52,7 +54,6 @@ def testMaze(n_trials, dbg_lvl=1):
     #       |     (2,2)    |    |
     # (0,0) ---------------------
 
-    """
     nx = 10
     ny = 10
     # Adding walls and constructing the environment
@@ -61,7 +62,7 @@ def testMaze(n_trials, dbg_lvl=1):
     rh_wall = Environment.Wall((4,6), (8,6))
     rv_wall = Environment.Wall((8,0), (8,8))
     maze    = Environment.MazeWithWalls(nx, ny, [lh_wall, lv_wall, rh_wall, rv_wall])
-    """
+    use_limits = False
 
     n_fields     = round(1.0 * (nx+3) * (ny+3))
     Hippocampus.N_CELLS_PER_FIELD = 1
@@ -71,7 +72,7 @@ def testMaze(n_trials, dbg_lvl=1):
 
     # Learn the value function
     amateur_critic = None
-    n_episodes     = 10
+    n_episodes     = 25
     canvas         = Graphics.MazeCanvas(maze)
     weights        = np.empty((n_cells, n_episodes), dtype=float)
     for episode in range(n_episodes):

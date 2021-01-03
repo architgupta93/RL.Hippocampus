@@ -179,6 +179,8 @@ def showImage(data, xticks=None, yticks=None, range=None, title=None):
     if title is not None:
         plt.title(title)
 
+    plt.xlabel('X (bin)')
+    plt.ylabel('Y (bin)')
     plt.colorbar()
     plt.gcf().show()
 
