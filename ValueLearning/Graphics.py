@@ -7,6 +7,7 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 MAX_TICKS_TO_SHOW = 5
+N_PLACE_CELLS_TO_SHOW = 5
 
 SMALL_SIZE = 12
 MEDIUM_SIZE = 16
@@ -29,6 +30,8 @@ def cleanAxes(ax_obj):
     ax_obj.tick_params(axis="x",direction="in", bottom="off",labelbottom="on") 
     ax_obj.xaxis.set_tick_params(width=AXES_LINE_THICCCK)
     ax_obj.yaxis.set_tick_params(width=AXES_LINE_THICCCK)
+    ax_obj.grid(False)
+    plt.tight_layout()
 
 class MazeCanvas(object):
     """
@@ -67,8 +70,12 @@ class MazeCanvas(object):
         showImage(activity, xticks=x_locs, yticks=y_locs)
 
     def visualizePlaceFields(self, cell_list):
-        for cell in cell_list:
-            self.visualizePlaceField(cell)
+        # Select a random subsample of cells to show the place fields for.
+        n_cells = len(cell_list)
+        cells_to_show = np.random.permutation(n_cells)[:N_PLACE_CELLS_TO_SHOW]
+
+        for cell in cells_to_show:
+            self.visualizePlaceField(cell_list[cell])
 
     def visualizeAggregatePlaceFields(self, place_cells):
         """
