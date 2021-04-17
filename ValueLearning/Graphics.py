@@ -7,6 +7,29 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 MAX_TICKS_TO_SHOW = 5
+
+SMALL_SIZE = 12
+MEDIUM_SIZE = 16
+BIGGER_SIZE = 18
+AXES_LINE_THICCCK = 2.0
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=BIGGER_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=MEDIUM_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=MEDIUM_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+
+def cleanAxes(ax_obj):
+    ax_obj.spines['top'].set_visible(False)
+    ax_obj.spines['right'].set_visible(False)
+    ax_obj.spines['bottom'].set_linewidth(AXES_LINE_THICCCK)
+    ax_obj.spines['left'].set_linewidth(AXES_LINE_THICCCK)
+    ax_obj.tick_params(axis="y",direction="in", left="off",labelleft="on") 
+    ax_obj.tick_params(axis="x",direction="in", bottom="off",labelbottom="on") 
+    ax_obj.xaxis.set_tick_params(width=AXES_LINE_THICCCK)
+    ax_obj.yaxis.set_tick_params(width=AXES_LINE_THICCCK)
+
 class MazeCanvas(object):
     """
     Used for visualizing the current view of the state space, as well as the
@@ -42,6 +65,10 @@ class MazeCanvas(object):
                 activity[xi, yj] = place_cell.getActivity((px, py))
 
         showImage(activity, xticks=x_locs, yticks=y_locs)
+
+    def visualizePlaceFields(self, cell_list):
+        for cell in cell_list:
+            self.visualizePlaceField(cell)
 
     def visualizeAggregatePlaceFields(self, place_cells):
         """

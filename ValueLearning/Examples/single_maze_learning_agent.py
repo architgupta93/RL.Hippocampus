@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as pl
 from pprint import pprint
 
-def testMaze(n_steps, learning_dbg_lvl=0, navigation_dbg_lvl=0):
+def testMaze(n_steps, learning_dbg_lvl=3, navigation_dbg_lvl=0):
     nT = n_steps[0] # Training steps
     nN = n_steps[1] # Navigation steps
     ValueLearning.DBG_LVL = learning_dbg_lvl
@@ -139,6 +139,7 @@ if __name__ == "__main__":
     training_ax.set_xlabel('Trials')
     training_ax.set_ylabel('Latency')
     training_ax.grid(True)
+    Graphics.cleanAxes(training_ax)
     pl.show()
 
     # print('%d Navigation trials'%n_navigation_trials)
@@ -150,6 +151,7 @@ if __name__ == "__main__":
     navigation_ax.set_xlabel('Trials')
     navigation_ax.set_ylabel('Latency')
     navigation_ax.grid(True)
+    Graphics.cleanAxes(navigation_ax)
     pl.show()
 
     print('Execution complete. Exiting!')
