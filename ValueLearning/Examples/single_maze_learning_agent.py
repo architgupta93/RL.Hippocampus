@@ -12,7 +12,7 @@ import matplotlib.pyplot as pl
 from pprint import pprint
 from scipy import stats
 
-MOVE_DISTACE = 0.17
+MOVE_DISTACE = 0.29
 
 def testMaze(n_steps, learning_dbg_lvl=0, navigation_dbg_lvl=0):
     nT = n_steps[0] # Training steps
@@ -80,8 +80,8 @@ def main(n_epochs=1):
         n_navigation_trials = 20  # Navigation trials
     else:
         # For quick trials
-        n_training_trials = 10 # Training trials
-        n_navigation_trials = 4  # Navigation trials
+        n_training_trials = 20 # Training trials
+        n_navigation_trials = 20  # Navigation trials
 
     training_steps = np.zeros((n_training_trials, n_epochs), dtype=float)
     navigation_steps = np.zeros((n_navigation_trials, n_epochs), dtype=float)
@@ -122,7 +122,7 @@ def main(n_epochs=1):
     err_navigation_steps = np.abs(np.append(min_dev_navigation_steps, max_dev_navigation_steps, axis=0))
     """
 
-    # For plotting the standard deviation, use this!
+    # For plotting the SEM measure, use this!
     err_training_steps = stats.sem(training_steps, axis=1)
     err_navigation_steps = stats.sem(navigation_steps, axis=1)
 
@@ -136,10 +136,17 @@ def main(n_epochs=1):
             mean_training_steps,
             yerr=err_training_steps,
             marker='d',
+            linewidth=2.0,
+            elinewidth=2.0,
+            alpha=0.7,
             ecolor='black',
-            capsize=0.5)
+            capsize=2.0)
     training_ax.set_xlabel('Trials')
     training_ax.set_ylabel('Distance Moved')
+    training_ax.set_xlim((-1, 20))
+    training_ax.set_xticks((0, 5, 10, 15, 20))
+    training_ax.set_ylim((0, 100))
+    training_ax.set_yticks((0, 50, 100))
     Graphics.cleanAxes(training_ax)
     pl.show()
 
@@ -151,10 +158,18 @@ def main(n_epochs=1):
     navigation_ax.errorbar(range(n_navigation_trials),
             mean_navigation_steps,
             yerr=err_navigation_steps,
-            marker='o', ecolor='black',
-            capsize=0.5)
+            marker='o',
+            linewidth=2.0,
+            elinewidth=2.0,
+            ecolor='black',
+            alpha=0.7,
+            capsize=2.0)
     navigation_ax.set_xlabel('Trials')
     navigation_ax.set_ylabel('Distance Moved')
+    navigation_ax.set_ylim((0, 100))
+    navigation_ax.set_xlim((-1, 20))
+    navigation_ax.set_xticks((0, 5, 10, 15, 20))
+    navigation_ax.set_yticks((0, 50, 100))
     Graphics.cleanAxes(navigation_ax)
     pl.show()
 

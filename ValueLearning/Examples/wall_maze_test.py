@@ -8,6 +8,7 @@ import time
 import threading
 import multiprocessing
 import numpy as np
+from scipy import stats
 import matplotlib.pylab as pl
 
 def testMaze(n_steps, learning_dbg_lvl=0, navigation_dbg_lvl=0):
@@ -125,24 +126,24 @@ if __name__ == "__main__":
     mean_training_steps   = np.reshape(np.mean(training_steps, axis=1), (n_training_trials, 1))
     mean_navigation_steps = np.reshape(np.mean(navigation_steps, axis=1), (n_navigation_trials, 1))
 
-    # For plotting the standard deviation, use this!
-    err_training_steps = np.std(training_steps, axis=1)
-    err_navigation_steps = np.std(navigation_steps, axis=1)
+    # For plotting the SEM measure, use this!
+    err_training_steps = stats.sem(training_steps, axis=1)
+    err_navigation_steps = stats.sem(navigation_steps, axis=1)
 
     training_fig = pl.figure()
     training_ax = training_fig.add_subplot(111)
     training_ax.errorbar(range(n_training_trials), mean_training_steps, yerr=err_training_steps, marker='d', ecolor='black', capsize=0.5)
     training_ax.set_xlabel('Trials')
-    training_ax.set_ylabel('Latency')
-    training_ax.grid(True)
+    training_ax.set_ylabel('Distance Moved')
+    Graphics.cleanAxes(training_ax)
     pl.show()
 
     navigation_fig = pl.figure()
     navigation_ax = navigation_fig.add_subplot(111)
     navigation_ax.errorbar(range(n_navigation_trials), mean_navigation_steps, yerr=err_navigation_steps, marker='o', ecolor='black', capsize=0.5)
     navigation_ax.set_xlabel('Trials')
-    navigation_ax.set_ylabel('Latency')
-    navigation_ax.grid(True)
+    navigation_ax.set_ylabel('Distance Moved')
+    Graphics.cleanAxes(navigation_ax)
     pl.show()
 
     print('Execution complete. Exiting!')

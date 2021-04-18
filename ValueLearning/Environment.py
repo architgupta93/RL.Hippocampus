@@ -253,7 +253,10 @@ class RandomGoalOpenField(Maze):
     def getOptimalDistanceToGoal(self):
         goal_location = self._goal_locations[0]
         init_location = self._init_locations[0]
-        return float(abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))
+
+        # NOTE: Subtract the goal threshold because ending within that regions
+        # counts as having reached the goal.
+        return float(abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1])) - self._goal_th
 
 class Wall(object):
     """
