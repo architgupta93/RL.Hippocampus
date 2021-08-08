@@ -10,12 +10,13 @@ import multiprocessing
 import numpy as np
 from scipy import stats
 import matplotlib.pylab as pl
+MOVE_DISTANCE = 0.03
 
-def testMaze(n_steps, learning_dbg_lvl=0, navigation_dbg_lvl=0):
+def testMaze(n_steps, learning_dbg_lvl=1, navigation_dbg_lvl=0):
     nT = n_steps[0] # Training steps
     nN = n_steps[1] # Navigation steps
     ValueLearning.DBG_LVL = learning_dbg_lvl
-    move_distance = 0.29
+    move_distance = MOVE_DISTANCE
 
     # Parameters describing the maze
     # Build the Maze (add walls etc.)
@@ -96,8 +97,8 @@ class MazeThread(threading.Thread):
         print("Exiting Thread:", self._thread_id)
 
 if __name__ == "__main__":
-    n_epochs = 20
-    n_training_trials = 50 # Training trials
+    n_epochs = 1
+    n_training_trials = 100 # Training trials
     n_navigation_trials = 20  # Navigation trials
 
     """
@@ -120,8 +121,8 @@ if __name__ == "__main__":
     threads = multiprocessing.Pool(n_epochs)
     training_results = threads.map(testMaze, [(n_training_trials, n_navigation_trials) for x in range(n_epochs)])
     for epoch in range(n_epochs):
-        training_steps[:, epoch] = training_results[epoch][0]
-        navigation_steps[:, epoch] = training_results[epoch][1]
+        training_steps[:, epoch] = training_results[epoch][0] * MOVE_DISTANCE
+        navigation_steps[:, epoch] = training_results[epoch][1] * MOVE_DISTANCE
 
     mean_training_steps   = np.reshape(np.mean(training_steps, axis=1), (n_training_trials, 1))
     mean_navigation_steps = np.reshape(np.mean(navigation_steps, axis=1), (n_navigation_trials, 1))

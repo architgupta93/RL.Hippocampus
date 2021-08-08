@@ -265,7 +265,7 @@ class Wall(object):
 
     # The walls are not 1D lines, they have some thickness. This is modelled by
     # a single number which is half of the thickness of the wall.
-    _WALL_THICKNESSS = 0.5
+    _WALL_THICKNESSS = 1.0
 
     def __init__(self, start, end):
         # Class constructor: Takes the two end points of the wall (start and
@@ -375,7 +375,7 @@ class MazeWithWalls(Maze):
         while (is_invalid):
             # Have a single, random goal location inside the maze
             is_invalid = False
-            location = (np.random.randint(1, self._nx), np.random.randint(1,self._ny))
+            location = (1+np.random.rand()*(self._nx-1), 1+np.random.rand()*(self._ny-1))
             for wall in self._walls:
                 if wall.includesPoint(location):
                     is_invalid = True
@@ -394,4 +394,4 @@ class MazeWithWalls(Maze):
         # NOTE: For the time being, we will just use this (INCORRECT) implementation
         goal_location = self._goal_locations[0]
         init_location = self._init_locations[0]
-        return float(abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1]))
+        return float(abs(goal_location[0]-init_location[0])+abs(goal_location[1]-init_location[1])) - self._goal_th

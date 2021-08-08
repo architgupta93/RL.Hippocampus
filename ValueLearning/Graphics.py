@@ -151,16 +151,19 @@ class WallMazeCanvas(MazeCanvas):
 
         # Show the goal location
         goal_loc = self._maze.getGoalLocation()
+        # fig.plot(goal_loc[0], goal_loc[1], color='g', marker='s')
         fig.plot(goal_loc[0], goal_loc[1], 'g-s')
 
         for idx, wall in enumerate(self._maze.getWalls()):
             [xs, ys] = wall.getPlottingData()
             if idx < 4:
-                # These should be the boundaries - Drawn green
-                fig.plot(xs, ys, 'g')
+                # These should be the boundaries - Drawn transparent black
+                # fig.plot(xs, ys, color='black', lw=3.0, alpha=0.9)
+                fig.plot(xs, ys, 'black')
             else:
-                # All obstructions (user designed) - Drawn blue
-                fig.plot(xs, ys, 'b')
+                # All obstructions (user designed) - Drawn transparent black
+                # fig.plot(xs, ys, color='black', lw=3.0, alpha=0.9)
+                fig.plot(xs, ys, 'black')
 
         super().plotTrajectory(fig)
 
